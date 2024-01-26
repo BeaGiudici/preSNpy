@@ -1,5 +1,6 @@
 class Nuclear:
-	def __init__(self):
+	def __init__(self, parent):
+		self.parent = parent
 		self.n1 = None
 		self.H1 = None
 		self.He4 = None
@@ -17,3 +18,22 @@ class Nuclear:
 		self.Ni56 = None
 		self.X56 = None
 		self.Ye = None
+	
+	def fillNuclear(self):
+		self.n1 = self.parent.file['xnu'][0][...]
+		self.H1 = self.parent.file['xnu'][1][...]
+		self.He4 = self.parent.file['xnu'][2][...]
+		self.C12 = self.parent.file['xnu'][3][...]
+		self.O16 = self.parent.file['xnu'][4][...]
+		self.Ne20 = self.parent.file['xnu'][5][...]
+		self.Mg24 = self.parent.file['xnu'][6][...]
+		self.Si28 = self.parent.file['xnu'][7][...]
+		self.S32 = self.parent.file['xnu'][8][...]
+		self.Ar36 = self.parent.file['xnu'][9][...]
+		self.Ca40 = self.parent.file['xnu'][10][...]
+		self.Ti44 = self.parent.file['xnu'][11][...]
+		self.Cr48 = self.parent.file['xnu'][12][...]
+		self.Fe52 = self.parent.file['xnu'][13][...]
+		self.Ni56 = self.parent.file['xnu'][14][...]
+		self.X56 = self.parent.file['xnu'][15][...]
+		self.Ye = self.parent.file['xnu'][16][...]
