@@ -1,5 +1,5 @@
 # preSNpy
-Routines to play with pre-supernova progenitor stars.
+`Python` package to play with pre-supernova progenitor stars.
 
 ## Requirements
 
