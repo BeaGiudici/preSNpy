@@ -28,36 +28,31 @@ class Postbounce1D:
 
 	def excludeInterior(self):
 		'''
-		Exclude the interior of the star, where the enclused mass is less 
-		than 1.4 Msun.
+			Exclude the interior of the star, where the enclosed mass is less 
+			than 1.4 Msun.
 		'''
 		return self.grid.mass > 1.4
 	
 	def starMass(self):
 		'''
-		Return the mass of the star.
+			Return the mass of the star.
 		'''
 		return self.grid.mass[-1]
 
 	def starRadius(self):
 		'''
-		Return the radius of the star.
+			Return the radius of the star.
 		'''
 		return self.grid.radius[-1]
 	
 	def compactness(self, masslim=2.5):
 		'''
-		Return the compactness of the star.
-		The compactness is defined as the ratio between the enclosed mass 
-		'masslim' (in unit of Msun) and the radius that encloses that mass 
-		(in unit of 1000 km).
+			Return the compactness of the star.
+			The compactness is defined as the ratio between the enclosed mass 
+			'masslim' (in unit of Msun) and the radius that encloses that mass 
+			(in unit of 1000 km).
 
-		\begin{equation}
-			\xi_{M} = \left.\frac{M / \Msun}{R(M) / \unit[1000]{km}} 
-								\right|_{t_\mathrm{bounce}}
-		\end{equation}
-		
-		Reference: O'Connor & Ott (2011), Eq. (1)
+			Reference: O'Connor & Ott (2011)
 		'''
 		idx = np.argmin(np.fabs(self.grid.mass - masslim))
 		rlim = self.grid.radius[idx] / (1.e5) # in km
