@@ -9,4 +9,4 @@ Besides, the package is based on the use of different `Python` libraries:
  - [h5Py](https://www.h5py.org/)
  - [matplotlib](https://matplotlib.org/)
 
-Be careful to have them installed on your machine before starting using `preSNpy`.
+Be careful to have them installed on your machine before starting to use `preSNpy`.
