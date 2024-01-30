@@ -40,9 +40,10 @@ class PhysArray(ndarray):
 
 		boundaries = kwargs.pop('boundaries', None)
 		draw = kwargs.pop('draw', True)
+		axis = kwargs.pop('axis', 'radius')
 
 		if self.ndim == 1:
-			x = self.grid[0].axis
+			x = self.grid.getAxis(axis)
 			y = self
 			line, = ax.plot(x, y, *args, **kwargs)
 			if matplotlib.is_interactive() and draw:

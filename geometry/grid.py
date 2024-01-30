@@ -32,7 +32,23 @@ class GridList(list):
 	
 	def hasAxis(self, name):
 		try:
-			self[name]
-			return True
+			for i in range(len(self)):
+				if self.axisNames(i) == name:
+					return True
 		except:
 			return False
+		
+	def getAxis(self, name):
+		if isinstance(name, str):
+			try:
+				for i in range(len(self)):
+					if self.axisNames(i) == name:
+						return self[i].axis
+			except:
+				return None
+			
+		elif isinstance(name, int):
+			try:
+				return self[name].axis
+			except:
+				return None
