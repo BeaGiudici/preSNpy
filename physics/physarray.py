@@ -1,22 +1,52 @@
 from numpy import ndarray
 from ..geometry.grid import Grid, GridList
 
+def createAxes(func):
+	from functools import wraps
+
+	@wraps(func)
+	def plotWithAx(self, *args, **kwargs):
+		import matplotlib.pyplot as plt
+		#plt.style.use('default_style.mlpstyle')
+		from matplotlib.axes import Axes
+		plt.ion()
+		if len(args) > 0 and isinstance(args[0], Axes):
+			ax = args[0]
+			args = args[1:]
+		else:
+			ax = plt.gca()
+		return func(self, ax, *args, **kwargs)
+	return plotWithAx
+
 class PhysArray(ndarray):
-	def __new__ (self, data, unit=None):
+	def __new__ (self, data, unit=None, grid=None):
 		obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
-		self.unit = unit
-		self.grid = None
+		setattr(obj, 'unit', unit)
+		setattr(obj, 'grid', grid)
 
-		self._make_grid(obj)
 		return obj
-	
-	def _make_grid(self):
-		from numpy import arange
 
-		grid = self.grid
-		self.grid = GridList()
+	@createAxes
+	def plot1D(self, ax, *args, **kwargs):
+		'''
+			Plot 1D data.
 
-		if not grid:
-			# Generate grid
-			for (i,l) in enumerate(self.shape):
-				self.grid.append(Grid('xyz'[i], arange(l)))
+			Parameters:
+			ax (matplotlib.axes.Axes object): The axes to plot on.
+			*args, **kwargs: Arguments and keyword arguments passed to the 
+												plot function.
+		'''
+		import matplotlib
+
+		boundaries = kwargs.pop('boundaries', None)
+		draw = kwargs.pop('draw', True)
+
+		if self.ndim == 1:
+			x = self.grid[0].axis
+			y = self
+			line, = ax.plot(x, y, *args, **kwargs)
+			if matplotlib.is_interactive() and draw:
+				ax.get_figure().canvas.draw()
+			return line
+		else:
+			raise Exception('Data must be 1-dimensional')

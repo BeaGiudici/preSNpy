@@ -13,6 +13,11 @@ class Postbounce1D:
 		self.file = h5py.File(filename, 'r')
 		self.ndim = 1
 
+		self.grid = grid.GridList()
+		self.grid.append(grid.Grid('radius', self.file['xzn'][:], unit='cm'))
+		self.grid.append(grid.Grid('mass', self.file['massb'][:], unit='Msun'))
+
+
 		# Initialize SCALAR quantities
 		self.nx = self.file['nx'][()]
 		self.nuc_ad = self.file['nnuc_ad'][()]
@@ -26,7 +31,7 @@ class Postbounce1D:
 
 		# Initialize HYDRO quantities
 		self.hydro = hydro.Hydro(self)
-		self.hydro.fillHydro()
+		self.hydro.fillHydro(self.grid)
 
 		# Initialize NUCLEAR quantities
 		self.nuclear = nuclear.Nuclear(self)

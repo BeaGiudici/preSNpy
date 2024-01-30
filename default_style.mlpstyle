@@ -1,0 +1,14 @@
+font.size             : 35
+axes.titlesize        : 40
+axes.labelsize        : 35
+figure.figsize        : 16,10
+legend.fontsize       : 25
+lines.linewidth       : 4
+lines.markersize      : 10
+xtick.labelsize       : 25
+ytick.labelsize       : 25
+xtick.direction       : in
+ytick.direction       : in
+xtick.top             : True
+ytick.right           : True
+xtick.major.pad       : 10

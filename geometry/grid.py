@@ -1,19 +1,19 @@
 class Grid:
-	def __init__(self, name, grid, unit=None):
+	def __init__(self, name, axis, unit=None):
 		from numpy import array
 		from ..physics.physarray import PhysArray
 
-		if isinstance(grid, list):
-			grid = array(grid)
+		if isinstance(axis, list):
+			axis = array(axis)
 
 		if unit is not None:
-			grid = PhysArray(grid, unit=unit)
+			axis = PhysArray(axis, unit=unit)
 
-		if grid.ndim != 1:
+		if axis.ndim != 1:
 			raise ValueError('Grid must be 1-dimensional')
 		
 		self.name = name
-		self.grid = grid
+		self.axis = axis
 	'''
 	def fillGrid(self):
 		self.radius = self.parent.file['xzn'][:]
