@@ -1,4 +1,5 @@
 import numpy as np
+from .physarray import PhysArray
 
 class Nuclear:
 	def __init__(self, parent):
@@ -22,23 +23,23 @@ class Nuclear:
 		self.Ye = None
 	
 	def fillNuclear(self):
-		self.n1 = self.parent.file['xnu'][0][...]
-		self.H1 = self.parent.file['xnu'][1][...]
-		self.He4 = self.parent.file['xnu'][2][...]
-		self.C12 = self.parent.file['xnu'][3][...]
-		self.O16 = self.parent.file['xnu'][4][...]
-		self.Ne20 = self.parent.file['xnu'][5][...]
-		self.Mg24 = self.parent.file['xnu'][6][...]
-		self.Si28 = self.parent.file['xnu'][7][...]
-		self.S32 = self.parent.file['xnu'][8][...]
-		self.Ar36 = self.parent.file['xnu'][9][...]
-		self.Ca40 = self.parent.file['xnu'][10][...]
-		self.Ti44 = self.parent.file['xnu'][11][...]
-		self.Cr48 = self.parent.file['xnu'][12][...]
-		self.Fe52 = self.parent.file['xnu'][13][...]
-		self.Ni56 = self.parent.file['xnu'][14][...]
-		self.X56 = self.parent.file['xnu'][15][...]
-		self.Ye = self.parent.file['xnu'][16][...]
+		self.n1 = PhysArray(self.parent.file['xnu'][0][...], unit='1')
+		self.H1 = PhysArray(self.parent.file['xnu'][1][...], unit='1')
+		self.He4 = PhysArray(self.parent.file['xnu'][2][...], unit='1')
+		self.C12 = PhysArray(self.parent.file['xnu'][3][...], unit='1')
+		self.O16 = PhysArray(self.parent.file['xnu'][4][...], unit='1')
+		self.Ne20 = PhysArray(self.parent.file['xnu'][5][...], unit='1')
+		self.Mg24 = PhysArray(self.parent.file['xnu'][6][...], unit='1')
+		self.Si28 = PhysArray(self.parent.file['xnu'][7][...], unit='1')
+		self.S32 = PhysArray(self.parent.file['xnu'][8][...], unit='1')
+		self.Ar36 = PhysArray(self.parent.file['xnu'][9][...], unit='1')
+		self.Ca40 = PhysArray(self.parent.file['xnu'][10][...], unit='1')
+		self.Ti44 = PhysArray(self.parent.file['xnu'][11][...], unit='1')
+		self.Cr48 = PhysArray(self.parent.file['xnu'][12][...], unit='1')
+		self.Fe52 = PhysArray(self.parent.file['xnu'][13][...], unit='1')
+		self.Ni56 = PhysArray(self.parent.file['xnu'][14][...], unit='1')
+		self.X56 = PhysArray(self.parent.file['xnu'][15][...], unit='1')
+		self.Ye = PhysArray(self.parent.file['xnu'][16][...], unit='1')
 
 	def shellInterface(self, elm1, elm2):
 		'''

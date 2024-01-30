@@ -1,8 +1,8 @@
 import h5py
 import numpy as np
 from ..geometry import grid
-from ..hydro import hydro
-from ..nuclear import nuclear
+from ..physics import hydro
+from ..physics import nuclear
 
 class Postbounce1D:
 	def __init__(self, filename):
@@ -11,10 +11,18 @@ class Postbounce1D:
 		'''
 		self.filename = filename
 		self.file = h5py.File(filename, 'r')
+		self.ndim = 1
+
+		# Initialize SCALAR quantities
+		self.nx = self.file['nx'][()]
+		self.nuc_ad = self.file['nnuc_ad'][()]
+		self.pmass = self.file['pmass'][()]
+		self.pmbar = self.file['pmbar'][()]
+		self.pmgrv = self.file['pmgrv'][()]
 
 		# Initialize GRID quantities
-		self.grid = grid.Grid(self, 1)
-		self.grid.fillGrid()
+		#self.grid = grid.Grid(self, 1)
+		#self.grid.fillGrid()
 
 		# Initialize HYDRO quantities
 		self.hydro = hydro.Hydro(self)
@@ -24,7 +32,6 @@ class Postbounce1D:
 		self.nuclear = nuclear.Nuclear(self)
 		self.nuclear.fillNuclear()
 
-		# TO-DO: Initialize SCALAR quantities
 
 	def excludeInterior(self):
 		'''
@@ -58,3 +65,6 @@ class Postbounce1D:
 		rlim = self.grid.radius[idx] / (1.e5) # in km
 		xi = masslim / (rlim/1000)
 		return xi
+	
+	def plot1D(self):
+		pass
