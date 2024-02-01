@@ -35,15 +35,7 @@ class Postbounce1D:
 
 		# Initialize NUCLEAR quantities
 		self.nuclear = nuclear.Nuclear(self)
-		self.nuclear.fillNuclear()
-
-
-	def excludeInterior(self):
-		'''
-			Exclude the interior of the star, where the enclosed mass is less 
-			than 1.4 Msun.
-		'''
-		return self.grid.mass > 1.4
+		self.nuclear.fillNuclear(self.grid)
 	
 	def starMass(self):
 		'''

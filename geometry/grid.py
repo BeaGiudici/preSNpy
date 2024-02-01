@@ -25,6 +25,12 @@ class Grid:
 			if self.dim > 2:
 				self.phi = self.parent.file['phi'][:]	
 	'''
+	def excludeInterior(self, minlim=0.0):
+		'''
+			Exclude the interior of the star, where the enclosed mass is less 
+			than 1.4 Msun.
+		'''
+		return self.axis > minlim
 
 class GridList(list):
 	def axisNames(self, index):

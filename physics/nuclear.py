@@ -21,34 +21,41 @@ class Nuclear:
 		self.Ni56 = None
 		self.X56 = None
 		self.Ye = None
+		self.grid = None
 	
-	def fillNuclear(self):
-		self.n1 = PhysArray(self.parent.file['xnu'][0][...], unit='1')
-		self.H1 = PhysArray(self.parent.file['xnu'][1][...], unit='1')
-		self.He4 = PhysArray(self.parent.file['xnu'][2][...], unit='1')
-		self.C12 = PhysArray(self.parent.file['xnu'][3][...], unit='1')
-		self.O16 = PhysArray(self.parent.file['xnu'][4][...], unit='1')
-		self.Ne20 = PhysArray(self.parent.file['xnu'][5][...], unit='1')
-		self.Mg24 = PhysArray(self.parent.file['xnu'][6][...], unit='1')
-		self.Si28 = PhysArray(self.parent.file['xnu'][7][...], unit='1')
-		self.S32 = PhysArray(self.parent.file['xnu'][8][...], unit='1')
-		self.Ar36 = PhysArray(self.parent.file['xnu'][9][...], unit='1')
-		self.Ca40 = PhysArray(self.parent.file['xnu'][10][...], unit='1')
-		self.Ti44 = PhysArray(self.parent.file['xnu'][11][...], unit='1')
-		self.Cr48 = PhysArray(self.parent.file['xnu'][12][...], unit='1')
-		self.Fe52 = PhysArray(self.parent.file['xnu'][13][...], unit='1')
-		self.Ni56 = PhysArray(self.parent.file['xnu'][14][...], unit='1')
-		self.X56 = PhysArray(self.parent.file['xnu'][15][...], unit='1')
-		self.Ye = PhysArray(self.parent.file['xnu'][16][...], unit='1')
+	def fillNuclear(self, grid):
+		self.grid = grid
+		self.n1 = PhysArray(self.parent.file['xnu'][0][...], unit='1', grid=grid)
+		self.H1 = PhysArray(self.parent.file['xnu'][1][...], unit='1', grid=grid)
+		self.He4 = PhysArray(self.parent.file['xnu'][2][...], unit='1', grid=grid)
+		self.C12 = PhysArray(self.parent.file['xnu'][3][...], unit='1', grid=grid)
+		self.O16 = PhysArray(self.parent.file['xnu'][4][...], unit='1', grid=grid)
+		self.Ne20 = PhysArray(self.parent.file['xnu'][5][...], unit='1', grid=grid)
+		self.Mg24 = PhysArray(self.parent.file['xnu'][6][...], unit='1', grid=grid)
+		self.Si28 = PhysArray(self.parent.file['xnu'][7][...], unit='1', grid=grid)
+		self.S32 = PhysArray(self.parent.file['xnu'][8][...], unit='1', grid=grid)
+		self.Ar36 = PhysArray(self.parent.file['xnu'][9][...], unit='1', grid=grid)
+		self.Ca40 = PhysArray(self.parent.file['xnu'][10][...], unit='1', \
+												grid=grid)
+		self.Ti44 = PhysArray(self.parent.file['xnu'][11][...], unit='1', \
+												grid=grid)
+		self.Cr48 = PhysArray(self.parent.file['xnu'][12][...], unit='1', \
+												grid=grid)
+		self.Fe52 = PhysArray(self.parent.file['xnu'][13][...], unit='1', \
+												grid=grid)
+		self.Ni56 = PhysArray(self.parent.file['xnu'][14][...], unit='1', \
+												grid=grid)
+		self.X56 = PhysArray(self.parent.file['xnu'][15][...], unit='1', grid=grid)
+		self.Ye = PhysArray(self.parent.file['xnu'][16][...], unit='1', grid=grid)
 
 	def shellInterface(self, elm1, elm2):
 		'''
     Get the coordinates (both in radius and mass) of the shell interface
 		between two layers.
 		'''
-		exclude = self.parent.excludeInterior()
-		mass = self.parent.grid.bar_mass[exclude]
-		radius = self.parent.grid.radius[exclude]
+		exclude = self.grid[1].excludeInterior(minlim=1.4)
+		mass = self.grid[1].axis[exclude]
+		radius = self.grid[0].axis[exclude]
 		N = len(mass)
 
 		if isinstance(elm1, str):
@@ -93,10 +100,45 @@ class Nuclear:
 			idx_in_shell_2[j] = shell2[j] and idx2[j]
 
 		# mass coordinate of the interface
-		m_interface = np.nanmin(mass[idx_in_shell_2])
+		m_interface = float(np.nanmin(mass[idx_in_shell_2]))
 		# radius coordinate of the interface 
-		r_interface = np.nanmin(radius[idx_in_shell_2])
+		r_interface = float(np.nanmin(radius[idx_in_shell_2]))
 		# index of the interface
-		idx_interface = np.argwhere(idx_in_shell_2)[0][0] 
+		idx_interface = np.argmin(np.fabs(self.grid[0].axis - r_interface))
 		
 		return r_interface, m_interface, idx_interface
+	
+	def QHe(self):
+		'''
+			Compute the normalized integral of rhor3 on the He composition 
+			shell as defined in Giudici et al. 2024.
+		'''
+		from scipy.integrate import trapz
+
+		rCOHe, mCOHe, idxCOHe = self.shellInterface(['C12', 'O16'], 'He4')
+		rHeH, mHeH, idxHeH = self.shellInterface('He4', 'H1')
+		rhor3 = self.parent.hydro.rhor3()
+		
+		curve_integral = trapz(rhor3[idxCOHe:idxHeH+1], \
+													 self.grid[0].axis[idxCOHe:idxHeH+1])
+		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
+
+		return float(curve_integral / rectangle)
+	
+	def QH(self, **kwargs):
+		'''
+			Compute the normalized integral of rhor3 on the H composition 
+			shell as defined in Giudici et al. 2024.
+		'''
+		from scipy.integrate import trapz
+
+		rHeH, mHeH, idxHeH = self.shellInterface('He4', 'H1')
+		rmax = kwargs.pop('rmax', 2.0 * rHeH)
+		idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
+		rhor3 = self.parent.hydro.rhor3()
+
+		curve_integral = trapz(rhor3[idxHeH:idx_max], \
+													 self.grid[0].axis[idxHeH:idx_max])
+		rectangle = (rmax - rHeH) * rhor3[idx_max]
+
+		return float(curve_integral / rectangle)

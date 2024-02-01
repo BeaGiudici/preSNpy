@@ -26,4 +26,4 @@ class Hydro:
 																	 'erg/g')
 
 	def rhor3(self):
-		return self.density * (self.grid[0].axis**3)
+		return self.density * (self.density.grid[0].axis**3)
