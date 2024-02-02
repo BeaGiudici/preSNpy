@@ -41,13 +41,13 @@ class Postbounce1D:
 		'''
 			Return the mass of the star.
 		'''
-		return self.grid.mass[-1]
+		return self.grid[1].axis[-1]
 
 	def starRadius(self):
 		'''
 			Return the radius of the star.
 		'''
-		return self.grid.radius[-1]
+		return self.grid[0].axis[-1]
 	
 	def compactness(self, masslim=2.5):
 		'''
@@ -62,6 +62,3 @@ class Postbounce1D:
 		rlim = self.grid.radius[idx] / (1.e5) # in km
 		xi = masslim / (rlim/1000)
 		return xi
-	
-	def plot1D(self):
-		pass

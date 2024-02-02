@@ -80,9 +80,8 @@ class Nuclear:
 		shell2 = np.empty(N, dtype=bool)
 
 		# Define shell1 and shell2 looking at the composition
-		for j in range(N):
-			shell1[j] = element1[j] > element2[j]
-			shell2[j] = element2[j] > element1[j]
+		shell1 = element1 > element2
+		shell2 = element2 > element1
 
 		# Max values in the respective cells
 		max1 = np.max(element1[shell1])
@@ -95,9 +94,9 @@ class Nuclear:
   	# RESPECTIVE CELL
 		idx_in_shell_2 = np.empty(len(idx2), dtype=bool)
 
-		for j in range(len(idx_in_shell_2)):
+		#for j in range(len(idx_in_shell_2)):
 			# element2 is inside the cell AND is larger than max/2
-			idx_in_shell_2[j] = shell2[j] and idx2[j]
+		idx_in_shell_2 = shell2 & idx2
 
 		# mass coordinate of the interface
 		m_interface = float(np.nanmin(mass[idx_in_shell_2]))
