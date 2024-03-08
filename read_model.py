@@ -7,6 +7,7 @@
 import sys
 import numpy as np
 import h5py
+import global_vars as gv
 
 if len(sys.argv) != 3:
   raise ValueError('Usage: python read_model.py <progenitor> <model>')
@@ -19,8 +20,10 @@ species=(['n1'],['p1','H1'],['he4','He4'],['c12','C12'],['o16','O16'],\
          ['fe52','Fe52'],['ni56','Ni56'],['x56','X'])
 
 if progenitor == 'rsg':
+  model_upper = model.upper()
+  model_upper.replace('.', '_')
   model += '_postbounce'
-  file = open(model)
+  file = open(gv.POSTDIR + model)
 
   # Header
   file.readline()
@@ -82,7 +85,7 @@ if progenitor == 'rsg':
   nx=len(data)
 
   # Create .h5 file
-  hf = h5py.File('snmodel_1d', 'w')
+  hf = h5py.File(gv.SNMODEL_DIR + model_upper, 'w')
 
   for i in range(len(header_global)):
       print(header_global[i])

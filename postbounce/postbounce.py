@@ -3,6 +3,7 @@ import numpy as np
 from ..geometry import grid
 from ..physics import hydro
 from ..physics import nuclear
+import global_vars as gv
 
 class Postbounce1D:
 	def __init__(self, filename):
@@ -10,7 +11,7 @@ class Postbounce1D:
 		 Postbounce profile data 1D
 		'''
 		self.filename = filename
-		self.file = h5py.File(filename, 'r')
+		self.file = h5py.File(gv.SNMODEL_DIR + filename, 'r')
 		self.ndim = 1
 
 		self.grid = grid.GridList()
