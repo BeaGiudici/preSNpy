@@ -3,7 +3,7 @@ import numpy as np
 from ..geometry import grid
 from ..physics import hydro
 from ..physics import nuclear
-import global_vars as gv
+from .. import global_vars as gv
 
 class Postbounce1D:
 	def __init__(self, filename):
@@ -11,7 +11,7 @@ class Postbounce1D:
 		 Postbounce profile data 1D
 		'''
 		self.filename = filename
-		self.file = h5py.File(gv.SNMODEL_DIR + filename, 'r')
+		self.file = h5py.File(gv.SNMODELS_DIR + filename, 'r')
 		self.ndim = 1
 
 		self.grid = grid.GridList()
@@ -59,7 +59,14 @@ class Postbounce1D:
 
 			Reference: O'Connor & Ott (2011)
 		'''
-		idx = np.argmin(np.fabs(self.grid.mass - masslim))
-		rlim = self.grid.radius[idx] / (1.e5) # in km
+		idx = np.argmin(np.fabs(self.grid.getAxis('mass') - masslim))
+		rlim = self.grid.getAxis('radius')[idx] / (1.e5) # in km
 		xi = masslim / (rlim/1000)
 		return xi
+	
+	def M4(self):
+		'''
+			Return the mass coordinate where the entropy per kb is 4.
+		'''
+		idx = np.argmin(np.fabs(self.hydro.entropy - 4))
+		return self.grid.getAxis('mass')[idx]
