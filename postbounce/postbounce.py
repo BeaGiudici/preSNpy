@@ -70,3 +70,15 @@ class Postbounce1D:
 		'''
 		idx = np.argmin(np.fabs(self.hydro.entropy - 4))
 		return self.grid.getAxis('mass')[idx]
+
+	def ZAMS_mass(self):
+		'''
+			Return the zero-age main sequence mass of the star (in unit of Msun).
+		'''
+		s = ''
+		spl = self.filename.split('_')
+		for sp in spl[0]:
+			if sp.isdigit():
+				s += sp
+		s += '.' + spl[1]
+		return float(s)
