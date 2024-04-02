@@ -1,7 +1,7 @@
 import os
 
 global POSTDIR
-POSTDIR = '/home/qhr/postbounce_profies/'
+POSTDIR = os.path.join(os.path.expanduser('~'), 'PhD/postbounce_profies/')
 
 global SNMODDEL_DIR
-SNMODELS_DIR = '/home/qhr/1Dsnmodels/'
+SNMODELS_DIR = os.path.join(os.path.expanduser('~'), 'PhD/1Dsnmodels/')
