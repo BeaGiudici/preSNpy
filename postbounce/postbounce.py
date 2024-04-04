@@ -78,11 +78,17 @@ class Postbounce1D:
 			Return the zero-age main sequence mass of the star (in unit of Msun).
 		'''
 		s = ''
-		spl = self.filename.split('_')
-		for sp in spl[0]:
-			if sp.isdigit():
-				s += sp
-		s += '.' + spl[1]
+		if '_' in self.filename:
+			spl = self.filename.split('_')
+			for sp in spl[0]:
+				if sp.isdigit():
+					s += sp
+			s += '.' + spl[1]
+		else:
+			for sp in self.filename:
+				if sp.isdigit():
+					s += sp
+			s += '.0'
 		return float(s)
 	
 	def dV(self):
