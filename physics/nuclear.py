@@ -141,3 +141,13 @@ class Nuclear:
 		rectangle = (rmax - rHeH) * rhor3[idx_max]
 
 		return float(curve_integral / rectangle)
+	
+	def element_mass(self, element):
+		'''
+			Return the mass of a given element.
+		'''
+		X = getattr(self, element)
+		volume = self.parent.dV()
+		density = self.parent.hydro.density
+		mass = np.sum(X * density * volume)
+		return mass

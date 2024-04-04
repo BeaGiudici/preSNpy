@@ -18,6 +18,8 @@ class Postbounce1D:
 		self.grid.append(grid.Grid('radius', self.file['xzn'][:], unit='cm'))
 		self.grid.append(grid.Grid('mass', self.file['massb'][:], unit='Msun'))
 
+		self.x = self.grid[0].axis
+
 
 		# Initialize SCALAR quantities
 		self.nx = self.file['nx'][()]
@@ -82,3 +84,10 @@ class Postbounce1D:
 				s += sp
 		s += '.' + spl[1]
 		return float(s)
+	
+	def dV(self):
+		'''
+			Return the volume element dV = 4*pi*r^2*dr
+		'''
+		volume = 4*np.pi*self.x[1:]**2*np.diff(self.x)
+		return np.append([0.0], volume)
