@@ -44,7 +44,10 @@ class Postbounce1D:
 		'''
 			Return the mass of the star.
 		'''
-		return self.grid[1].axis[-1]
+		volume = self.dV()
+		density = self.hydro.density
+		mass = np.sum(density * volume)
+		return mass 
 
 	def starRadius(self):
 		'''

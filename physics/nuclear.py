@@ -146,7 +146,13 @@ class Nuclear:
 		'''
 			Return the mass of a given element.
 		'''
-		X = getattr(self, element)
+		if isinstance(element, str):
+			if not hasattr(self, element):
+				raise AttributeError(f'{element} not found in nuclear data')
+			X = getattr(self, element)
+		else:
+			raise TypeError('element must be a string or a list of strings')
+
 		volume = self.parent.dV()
 		density = self.parent.hydro.density
 		mass = np.sum(X * density * volume)
