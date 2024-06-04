@@ -1,0 +1,10 @@
+name: presnpy
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - matplotlib
+  - numpy
+  - scipy
+  - h5py
+prefix: /home/beatrice/miniconda3/envs/presnpy
