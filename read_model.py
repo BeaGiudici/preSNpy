@@ -7,7 +7,7 @@
 import sys
 import numpy as np
 import h5py
-import global_vars as gv
+import preSNpy.global_vars as gv
 
 if len(sys.argv) != 3:
   raise ValueError('Usage: python read_model.py <progenitor> <model>')
