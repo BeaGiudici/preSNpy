@@ -33,7 +33,7 @@ Besides, the package is based on the use of different `Python` libraries:
 
 ## Environment creation
 
-In case yu use [Anaconda](https://docs.anaconda.com/), the environment file `presnpy.yml` is also provided to create an environment with all the requirements.
+In case you use [Anaconda](https://docs.anaconda.com/), the environment file `presnpy.yml` is also provided to create an environment with all the requirements.
 
 To create an environment from `presnpy.yml` run the command
 ```
