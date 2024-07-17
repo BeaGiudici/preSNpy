@@ -2,6 +2,7 @@ import os
 
 global POSTDIR
 POSTDIR = os.path.join(os.path.expanduser('~'), 'PhD/postbounce_profies/')
+PRESN_DIR = os.path.join(os.path.expanduser('~'), 'PhD/progenitor_models/')
 
 global SNMODDEL_DIR
 if os.uname()[1] == 'dorothy':
