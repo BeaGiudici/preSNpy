@@ -17,10 +17,10 @@ class Postbounce1D:
 
 		self.grid = grid.GridList()
 		self.grid.append(grid.Grid('radius', self.file['xzn'][:], unit='cm'))
-		self.grid.append(grid.Grid('mass', self.file['massb'][:], unit='Msun'))
+		self.grid.append(grid.Grid('mass', self.file['mass'][:], unit='Msun'))
 
 		self.x = self.grid[0].axis
-
+		self.mass = self.grid[1].axis
 
 		# Initialize SCALAR quantities
 		self.nx = self.file['nx'][()]

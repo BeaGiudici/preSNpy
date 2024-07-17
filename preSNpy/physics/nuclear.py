@@ -155,6 +155,6 @@ class Nuclear:
 
 		volume = self.parent.dV()
 		density = self.parent.hydro.density
-		mass = np.sum(X[1:] * np.diff(self.grid[1].axis))
-		mass += X[0] * self.grid[1].axis[0]
+		mass = np.sum(X[1:] * np.diff(self.parent.mass))
+		mass += X[0] * self.parent.mass[0]
 		return mass
