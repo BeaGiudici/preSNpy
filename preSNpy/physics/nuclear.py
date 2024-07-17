@@ -153,8 +153,21 @@ class Nuclear:
 		else:
 			raise TypeError('element must be a string or a list of strings')
 
-		volume = self.parent.dV()
-		density = self.parent.hydro.density
 		mass = np.sum(X[1:] * np.diff(self.parent.mass))
 		mass += X[0] * self.parent.mass[0]
 		return mass
+	
+	def core_mass(self, element):
+		'''
+			Return the core mass
+		'''
+		if isinstance(element, str):
+			if not hasattr(self, element):
+				raise AttributeError(f'{element} not found in nuclear data')
+			X = getattr(self, element)
+		else:
+			raise TypeError('element must be a string or a list of strings')
+		
+		mass_shell = np.insert(np.diff(self.parent.mass),0,self.parent.mass[0])
+		core_mass = np.sum(mass_shell[X <= 0.2])
+		return core_mass
