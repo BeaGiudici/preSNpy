@@ -128,8 +128,8 @@ class PreSN1D(Model):
 		self.hydro.fillHydro(self.filename, 'presn')
 
 		# Initialize NUCLEAR quantities
-		#self.nuclear.updateGrid(self.grid)
-		#self.nuclear.fillNuclear(self.filename, 'presn')
+		self.nuclear.updateGrid(self.grid)
+		self.nuclear.fillNuclear(self.filename, 'presn')
 
 if __name__ == '__main__':
 	p = Postbounce1D('HS13_1')
