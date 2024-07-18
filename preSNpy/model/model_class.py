@@ -51,19 +51,14 @@ class Model:
 		'''
 			Return the zero-age main sequence mass of the star (in unit of Msun).
 		'''
-		s = ''
-		if '_' in self.filename:
-			spl = self.filename.split('_')
-			for sp in spl[0]:
-				if sp.isdigit():
-					s += sp
-			s += '.' + spl[1]
-		else:
-			for sp in self.filename:
-				if sp.isdigit():
-					s += sp
-			s += '.0'
-		return float(s)
+		mass = ''
+		for (i,s) in enumerate(self.filename):
+			if s.isdigit():
+				mass += s
+			if not s.isdigit() and \
+				(self.filename[i-1].isdigit() and self.filename[i+1].isdigit()):
+				mass += '.'
+		return float(mass)
 	
 	def dV(self):
 		'''
