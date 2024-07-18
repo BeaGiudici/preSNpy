@@ -116,7 +116,7 @@ class PreSN1D(Model):
 		self.filename = filename
 		self.ndim = 1
 
-		radius, mass = np.genfromtxt(filename, skip_header=2, usecols=(1,2), \
+		mass, radius = np.genfromtxt(filename, skip_header=2, usecols=(1,2), \
 															 unpack=True)
 		mass /= (1.989e33)
 		self.grid.append(grid.Grid('radius', radius, unit='cm'))
