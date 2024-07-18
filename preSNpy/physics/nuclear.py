@@ -5,6 +5,9 @@ class Nuclear:
 	def __init__(self, parent, grid):
 		self.parent = parent
 		self.grid = grid
+
+	def updateGrid(self, grid):
+		self.grid = grid
 	
 	def fillNuclear(self, filename, type):
 		if type == 'postbounce':
@@ -22,6 +25,28 @@ class Nuclear:
 			ye = np.genfromtxt(filename, skip_header=6, max_rows=self.parent.nx, \
 											usecols=(8,), unpack=True)
 			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
+
+		elif type == 'presn':
+			X = np.genfromtxt(filename, skip_header=2, unpack=True, \
+				usecols=(14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33))
+			header = np.genfromtxt(filename, skip_header=1, max_rows=1, \
+				unpack=True, dtype='str')[-X.shape[0]:]
+			
+			for (i,x) in enumerate(X):
+				name = header[i].lower()
+				if name == 'neutrons':
+					name = 'n'
+				elif name == "'Fe":
+					name = 'x56'
+				setattr(self, name, PhysArray(x, unit='1', grid=self.grid))
+
+			ye = np.genfromtxt(filename, skip_header=2, usecols=(11,), unpack=True)
+			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
+
+			Abar = np.genfromtxt(filename, skip_header=2, usecols=(10,), unpack=True)
+			setattr(self, 'abar', PhysArray(Abar, unit='1', grid=self.grid))
+			
+		self.parent.nuc = X.shape[0] + 1
 
 	def shellInterface(self, elm1, elm2):
 		'''

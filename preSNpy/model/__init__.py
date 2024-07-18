@@ -8,4 +8,4 @@ import os
 import h5py
 import numpy as np
 
-from .postbounce import *
+from .model_class import *
