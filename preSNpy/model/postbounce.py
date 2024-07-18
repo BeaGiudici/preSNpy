@@ -1,10 +1,4 @@
-import h5py
-import numpy as np
-from ..geometry import grid
-from ..physics import hydro
-from ..physics import nuclear
-from .. import global_vars as gv
-import os
+from preSNpy.model import *
 
 class Postbounce1D:
 	def __init__(self, filename):
@@ -102,3 +96,8 @@ class Postbounce1D:
 		volume = 4*np.pi*self.x[1:]**2*np.diff(self.x)
 		v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
 		return np.append(v0, volume)
+	
+
+if __name__ == '__main__':
+	p = Postbounce1D('HS13_1')
+	print('Done')

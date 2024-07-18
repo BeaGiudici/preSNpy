@@ -12,7 +12,7 @@ setup(
     license = 'GNU GENERAL PUBLIC LICENSE',
     packages = find_packages(),
     package_data = {
-      'preSNpy.postbounce' : ['preSNpy/postbounce/*.py'],
+      'preSNpy.postbounce' : ['preSNpy/model/*.py'],
       'preSNpy.geometry' : ['preSNpy/geometry/*.py'],
       'preSNpy.physics' : ['preSNpy/physics/*.py'],
     },
