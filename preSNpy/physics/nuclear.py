@@ -114,8 +114,8 @@ class Nuclear:
 		'''
 		from scipy.integrate import trapz
 
-		rCOHe, mCOHe, idxCOHe = self.shellInterface(['C12', 'O16'], 'He4')
-		rHeH, mHeH, idxHeH = self.shellInterface('He4', 'H1')
+		rCOHe, mCOHe, idxCOHe = self.shellInterface(['c12', 'o16'], 'he4')
+		rHeH, mHeH, idxHeH = self.shellInterface('he4', 'h1')
 		rhor3 = self.parent.hydro.rhor3()
 		
 		curve_integral = trapz(rhor3[idxCOHe:idxHeH+1], \
@@ -131,7 +131,7 @@ class Nuclear:
 		'''
 		from scipy.integrate import trapz
 
-		rHeH, mHeH, idxHeH = self.shellInterface('He4', 'H1')
+		rHeH, mHeH, idxHeH = self.shellInterface('he4', 'h1')
 		rmax = kwargs.pop('rmax', 2.0 * rHeH)
 		idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
 		rhor3 = self.parent.hydro.rhor3()
