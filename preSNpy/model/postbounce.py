@@ -6,35 +6,37 @@ class Postbounce1D:
 		 Postbounce profile data 1D
 		'''
 		self.filename = filename
-		self.file = h5py.File(os.path.join(gv.SNMODELS_DIR, filename), 'r')
 		self.ndim = 1
 
+		with open(filename, 'r') as f:
+			#Header
+			f.readline()
+
+			# Global data
+			header_global = f.readline().split()[1:]
+			data_global = f.readline().split()
+		
+		for (i, data) in enumerate(data_global):
+			setattr(self, header_global[i].lower(), float(data))
+
+		self.nx = int(self.ndat)
+		# Set the grid
+		radius, mass = np.genfromtxt(filename, skip_header=6, max_rows=self.nx, \
+															 usecols=(1,2), unpack=True)
+
 		self.grid = grid.GridList()
-		self.grid.append(grid.Grid('radius', self.file['xzn'][:], unit='cm'))
-		self.grid.append(grid.Grid('mass', self.file['mass'][:], unit='Msun'))
-
-		self.x = self.grid[0].axis
-		self.mass = self.grid[1].axis
-
-		# Initialize SCALAR quantities
-		self.nx = self.file['nx'][()]
-		self.nuc_ad = self.file['nnuc_ad'][()]
-		self.pmass = self.file['pmass'][()]
-		self.pmbar = self.file['pmbar'][()]
-		self.pmgrv = self.file['pmgrv'][()]
-
-		# Initialize GRID quantities
-		#self.grid = grid.Grid(self, 1)
-		#self.grid.fillGrid()
+		self.grid.append(grid.Grid('radius', radius, unit='cm'))
+		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
+		self.mass = mass
 
 		# Initialize HYDRO quantities
-		self.hydro = hydro.Hydro(self)
-		self.hydro.fillHydro(self.grid)
+		self.hydro = hydro.Hydro(self, self.grid)
+		self.hydro.fillHydro(self.filename, 'postbounce')
 
 		# Initialize NUCLEAR quantities
-		self.nuclear = nuclear.Nuclear(self)
-		self.nuclear.fillNuclear(self.grid)
-	
+		self.nuclear = nuclear.Nuclear(self, self.grid)
+		self.nuclear.fillNuclear(self.filename, 'postbounce')
+
 	def starMass(self):
 		'''
 			Return the mass of the star.

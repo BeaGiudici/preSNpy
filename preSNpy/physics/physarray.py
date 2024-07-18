@@ -1,4 +1,4 @@
-from numpy import ndarray
+from numpy import ndarray, array
 from ..geometry.grid import Grid, GridList
 
 def createAxes(func):
@@ -20,7 +20,18 @@ def createAxes(func):
 
 class PhysArray(ndarray):
 	def __new__ (self, data, unit=None, grid=None):
-		obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
+		'''
+			Parameters:
+			data (ndarray): The data to be stored.
+			unit (str): The unit of the data.
+			grid (Grid): The grid associated with the data.
+		'''
+		if isinstance(data, ndarray):
+			obj = data.view(PhysArray)
+		else:
+			if isinstance(data, list):
+				data = array(data)
+			obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
 		setattr(obj, 'unit', unit)
 		setattr(obj, 'grid', grid)
 

@@ -2,51 +2,26 @@ import numpy as np
 from .physarray import PhysArray
 
 class Nuclear:
-	def __init__(self, parent):
+	def __init__(self, parent, grid):
 		self.parent = parent
-		self.n1 = None
-		self.H1 = None
-		self.He4 = None
-		self.C12 = None
-		self.O16 = None
-		self.Ne20 = None
-		self.Mg24 = None
-		self.Si28 = None
-		self.S32 = None
-		self.Ar36 = None
-		self.Ca40 = None
-		self.Ti44 = None
-		self.Cr48 = None
-		self.Fe52 = None
-		self.Ni56 = None
-		self.X56 = None
-		self.Ye = None
-		self.grid = None
-	
-	def fillNuclear(self, grid):
 		self.grid = grid
-		self.n1 = PhysArray(self.parent.file['xnu'][0][...], unit='1', grid=grid)
-		self.H1 = PhysArray(self.parent.file['xnu'][1][...], unit='1', grid=grid)
-		self.He4 = PhysArray(self.parent.file['xnu'][2][...], unit='1', grid=grid)
-		self.C12 = PhysArray(self.parent.file['xnu'][3][...], unit='1', grid=grid)
-		self.O16 = PhysArray(self.parent.file['xnu'][4][...], unit='1', grid=grid)
-		self.Ne20 = PhysArray(self.parent.file['xnu'][5][...], unit='1', grid=grid)
-		self.Mg24 = PhysArray(self.parent.file['xnu'][6][...], unit='1', grid=grid)
-		self.Si28 = PhysArray(self.parent.file['xnu'][7][...], unit='1', grid=grid)
-		self.S32 = PhysArray(self.parent.file['xnu'][8][...], unit='1', grid=grid)
-		self.Ar36 = PhysArray(self.parent.file['xnu'][9][...], unit='1', grid=grid)
-		self.Ca40 = PhysArray(self.parent.file['xnu'][10][...], unit='1', \
-												grid=grid)
-		self.Ti44 = PhysArray(self.parent.file['xnu'][11][...], unit='1', \
-												grid=grid)
-		self.Cr48 = PhysArray(self.parent.file['xnu'][12][...], unit='1', \
-												grid=grid)
-		self.Fe52 = PhysArray(self.parent.file['xnu'][13][...], unit='1', \
-												grid=grid)
-		self.Ni56 = PhysArray(self.parent.file['xnu'][14][...], unit='1', \
-												grid=grid)
-		self.X56 = PhysArray(self.parent.file['xnu'][15][...], unit='1', grid=grid)
-		self.Ye = PhysArray(self.parent.file['xnu'][16][...], unit='1', grid=grid)
+	
+	def fillNuclear(self, filename, type):
+		if type == 'postbounce':
+			X = np.genfromtxt(filename, skip_header=12+self.parent.nx, \
+										 unpack=True)[1:]
+			header = np.genfromtxt(filename, skip_header=11+self.parent.nx, \
+													skip_footer=self.parent.nx, unpack=True, \
+													comments='/', dtype='str')[2:]
+
+			for (i,x) in enumerate(X):
+				name = header[i][2:].lower()
+				if name == 'p':
+					name = 'h1'
+				setattr(self, name, PhysArray(x, unit='1', grid=self.grid))
+			ye = np.genfromtxt(filename, skip_header=6, max_rows=self.parent.nx, \
+											usecols=(8,), unpack=True)
+			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
 
 	def shellInterface(self, elm1, elm2):
 		'''
@@ -157,17 +132,20 @@ class Nuclear:
 		mass += X[0] * self.parent.mass[0]
 		return mass
 	
-	def core_mass(self, element):
+	def core_mass_He(self):
 		'''
-			Return the core mass
+			Return the core mass of He
 		'''
-		if isinstance(element, str):
-			if not hasattr(self, element):
-				raise AttributeError(f'{element} not found in nuclear data')
-			X = getattr(self, element)
-		else:
-			raise TypeError('element must be a string or a list of strings')
 		
 		mass_shell = np.insert(np.diff(self.parent.mass),0,self.parent.mass[0])
-		core_mass = np.sum(mass_shell[X <= 0.2])
+		core_mass = np.sum(mass_shell[self.h1 <= 0.2])
+		return core_mass
+	
+	def core_mass_CO(self):
+		'''
+			Return the core mass of C+O
+		'''
+		
+		mass_shell = np.insert(np.diff(self.parent.mass),0,self.parent.mass[0])
+		core_mass = np.sum(mass_shell[self.he4 <= 0.2])
 		return core_mass

@@ -3,9 +3,6 @@ class Grid:
 		from numpy import array
 		from ..physics.physarray import PhysArray
 
-		if isinstance(axis, list):
-			axis = array(axis)
-
 		if unit is not None:
 			axis = PhysArray(axis, unit=unit)
 
