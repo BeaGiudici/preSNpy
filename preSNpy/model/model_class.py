@@ -73,7 +73,7 @@ class Postbounce1D(Model):
 		'''
 		 Postbounce profile data 1D
 		'''
-		super().__init__(self)
+		super().__init__()
 
 		self.filename = filename
 		self.ndim = 1
@@ -111,7 +111,7 @@ class PreSN1D(Model):
 		'''
 		 Pre-supernova profile data 1D
 		'''
-		super().__init__(self)
+		super().__init__()
 
 		self.filename = filename
 		self.ndim = 1
