@@ -19,7 +19,7 @@ class Model:
 		#density = self.hydro.density
 		#mass = np.sum(density * volume)
 		#return mass 
-    return self.mass[-1]
+		return self.mass[-1]
 
 	def starRadius(self):
 		'''
