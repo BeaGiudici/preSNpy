@@ -25,7 +25,7 @@ class Hydro:
 																			 grid=self.grid))
 			setattr(self, 'energy', PhysArray(data[5], unit='erg/g', grid=self.grid))
 		
-		elif type == 'presn':
+		elif type == 'kepler':
 			data = np.genfromtxt(filename, skip_header=2, usecols=(3,4,5,6,7,8,9), \
 												unpack=True)
 			setattr(self, 'density', PhysArray(data[1], unit='g/cm^3', \

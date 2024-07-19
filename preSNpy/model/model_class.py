@@ -107,7 +107,7 @@ class Postbounce1D(Model):
 		self.nuclear.fillNuclear(self.filename, 'postbounce')
 	
 class PreSN1D(Model):
-	def __init__(self, filename):
+	def __init__(self, filename, source='kepler'):
 		'''
 		 Pre-supernova profile data 1D
 		'''
@@ -115,6 +115,7 @@ class PreSN1D(Model):
 
 		self.filename = filename
 		self.ndim = 1
+		self.source = source
 
 		mass, radius = np.genfromtxt(filename, skip_header=2, usecols=(1,2), \
 															 unpack=True)
@@ -126,11 +127,11 @@ class PreSN1D(Model):
 
 		# Initialize HYDRO quantities
 		self.hydro.updateGrid(self.grid)
-		self.hydro.fillHydro(self.filename, 'presn')
+		self.hydro.fillHydro(self.filename, source)
 
 		# Initialize NUCLEAR quantities
 		self.nuclear.updateGrid(self.grid)
-		self.nuclear.fillNuclear(self.filename, 'presn')
+		self.nuclear.fillNuclear(self.filename, source)
 
 if __name__ == '__main__':
 	p = Postbounce1D('HS13_1')

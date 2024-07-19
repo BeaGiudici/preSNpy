@@ -26,7 +26,7 @@ class Nuclear:
 											usecols=(8,), unpack=True)
 			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
 
-		elif type == 'presn':
+		elif type == 'kepler':
 			X = np.genfromtxt(filename, skip_header=2, unpack=True, \
 				usecols=(14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33))
 			header = np.genfromtxt(filename, skip_header=1, max_rows=1, \
