@@ -15,10 +15,11 @@ class Model:
 		'''
 			Return the mass of the star.
 		'''
-		volume = self.dV()
-		density = self.hydro.density
-		mass = np.sum(density * volume)
-		return mass 
+		#volume = self.dV()
+		#density = self.hydro.density
+		#mass = np.sum(density * volume)
+		#return mass 
+        return self.mass[-1]
 
 	def starRadius(self):
 		'''
