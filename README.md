@@ -1,4 +1,4 @@
-# preSNpy
+# preSNpy v1.0
 `Python` package to play with pre-supernova progenitor stars.
 
 ## Requirements
