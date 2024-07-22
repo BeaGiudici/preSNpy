@@ -13,12 +13,15 @@ Besides, the package is based on the use of different `Python` libraries:
 ## Installation
 `preSNpy` can be installed through `pip`. What follows is an easy step-by-step guide to the installation.
 
-1. Clone the repository, either with SSH or the URL
+1. Clone the repository, either with SSH
    ```
    git clone git@github.com:BeaGiudici/preSNpy.git
+   ```
+   or the URL
+   ```
    git clone https://github.com/BeaGiudici/preSNpy.git
    ```
-2. Go to the package folder and run `pip`
+3. Go to the package folder and run `pip`
    ```
    cd preSNpy
    pip install .
