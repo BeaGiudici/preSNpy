@@ -1,6 +1,8 @@
 # preSNpy v1.0
 `Python` package to play with pre-supernova progenitor stars.
 
+**Disclaimer.** This package has been build and mantained by a non-expert on stellar astrophysics. The main purpose of this package is to give a simple tool to extract useful information about the progenitor stars to people that are not familiar with stellar astrophysics.
+
 ## Requirements
 
 This package is built entirely in `Python` and it requires a version of [Python3](https://www.python.org/) to be used in all its power.
