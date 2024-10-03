@@ -42,4 +42,5 @@ class Hydro:
 
 
 	def rhor3(self):
-		return self.density * (self.density.grid[0].axis**3)
+		return PhysArray(self.density * (self.density.grid[0].axis**3), unit='g', \
+											grid=self.grid)
