@@ -31,6 +31,16 @@ for model in gv.MODELS:
   m.hydro.density.plot1D(ax2, axis='mass', label=ps['label'], \
                         color=ps['color'], linestyle=ps['linestyle'])
 
+subax11 = ax1.inset_axes([0.03, 0.07, 0.42, 0.4], xlim=[9e7,5e9], ylim=[4e2, 4e7])
+ax1.indicate_inset_zoom(subax11, edgecolor='black', linewidth=2)
+subax11.set_xscale('log')
+subax11.set_yscale('log')
+subax11.yaxis.set_ticks_position('right')
+for model in ['HS13_1', 'HS18_2', 'HS19_8', 'HS20_8', 'HS26_2']:
+  m = Postbounce1D(getPostbounceFile(model))
+  ps = getModelPlotSettings(model)
+  m.hydro.density.plot1D(subax11, color=ps['color'], linestyle=ps['linestyle'])
+
 ax2.legend(loc='upper right', fontsize=22)
 fig.savefig(os.path.join(gv.PLOTSDIR, 'stellarProgenitors', \
             'densityProfile.pdf'), bbox_inches='tight')
