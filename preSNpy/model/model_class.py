@@ -123,10 +123,14 @@ class PreSN1D(Model):
 			data = self.__read_kepler_file()
 			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
 			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
+			mass /= (1.989e33)
+		elif source == 'mesa':
+			data = self.__read_mesa_file()
+			mass = data['mass'].values[:]
+			radius = 10 ** data['logR'].values[:]
 		else:
 			raise ValueError('Source not recognized')
 
-		mass /= (1.989e33)
 		self.grid.append(grid.Grid('radius', radius, unit='cm'))
 		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
 		self.mass = mass
@@ -152,22 +156,6 @@ class PreSN1D(Model):
 							   skipfooter=footer_index, names=column_names)
 			data = data.replace('---', 0.0)
 		return data
-	
-	def __find_footer(self, file_lines):
-		'''
-        Find the index of the line where the data ends.
-        return: int, number on lines to skip from the end of the file.
-        '''
-		findex = 0
-		lines = list(reversed(file_lines))
-		for lindex in range(len(lines)):
-			try:
-				float(lines[lindex].split()[0].replace(':',''))
-				findex = lindex
-				break
-			except:
-				continue
-		return findex
 
 	def __find_kepler_header_lines(self, file_lines):
 		'''
@@ -196,6 +184,39 @@ class PreSN1D(Model):
 				break
 
 		return line_index, column_names
+
+	def __read_mesa_file(self):
+		with open(self.filename, 'r') as f:
+			lines = f.readlines()
+			line_index = self.__find_MESA_header_lines(lines)
+			footer_index = self.__find_footer(lines)
+		data = pd.read_csv(self.filename, skiprows=line_index, delimiter='\s+',
+						   skipfooter=footer_index, header=0)
+		data = data.iloc[::-1].reset_index(drop=True)
+		return data
+	
+	def __find_MESA_header_lines(self, file_lines):
+		for lindex in range(1,len(file_lines)):
+			if 'logT' in file_lines[lindex]:
+				line_index = lindex
+				break
+		return line_index
+
+	def __find_footer(self, file_lines):
+		'''
+        Find the index of the line where the data ends.
+        return: int, number on lines to skip from the end of the file.
+        '''
+		findex = 0
+		lines = list(reversed(file_lines))
+		for lindex in range(len(lines)):
+			try:
+				float(lines[lindex].split()[0].replace(':',''))
+				findex = lindex
+				break
+			except:
+				continue
+		return findex
 
 
 if __name__ == '__main__':

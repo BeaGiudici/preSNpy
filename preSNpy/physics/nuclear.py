@@ -50,6 +50,26 @@ class Nuclear:
 			setattr(self, 'abar', PhysArray(data['cell a_bar'].astype(float).fillna(0.0).values[:],
                                    unit='1', grid=self.grid))
 			X = self.ye
+		elif type == 'mesa':
+			data = filename
+			header = list(data.keys())
+			neutron_index = header.index('neut')
+			ni56_index = header.index('ni56')
+			for key in header[neutron_index:ni56_index + 1]:
+				if key == 'neut':
+					name = 'n'
+				elif key == "'Fe'":
+					name = 'x56'
+				else:
+					name = key
+				setattr(self, name, PhysArray(data[key].values[:],
+                                  unit='1', grid=self.grid))
+			setattr(self, 'ye', PhysArray(data['ye'].values[:],
+                                 unit='1', grid=self.grid))
+
+			setattr(self, 'abar', PhysArray(data['abar'].values[:],
+                                   unit='1', grid=self.grid))
+			X = self.ye
 			
 		self.parent.nuc = X.shape[0] + 1
 
