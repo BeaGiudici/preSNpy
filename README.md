@@ -1,5 +1,7 @@
-# preSNpy
+# preSNpy v1.0
 `Python` package to play with pre-supernova progenitor stars.
+
+**Disclaimer.** This package has been build and mantained by a non-expert on stellar astrophysics. The main purpose of this package is to give a simple tool to extract useful information about the progenitor stars to people that are not familiar with stellar astrophysics.
 
 ## Requirements
 
@@ -13,12 +15,15 @@ Besides, the package is based on the use of different `Python` libraries:
 ## Installation
 `preSNpy` can be installed through `pip`. What follows is an easy step-by-step guide to the installation.
 
-1. Clone the repository, either with SSH or the URL
+1. Clone the repository, either with SSH
    ```
    git clone git@github.com:BeaGiudici/preSNpy.git
+   ```
+   or the URL
+   ```
    git clone https://github.com/BeaGiudici/preSNpy.git
    ```
-2. Go to the package folder and run `pip`
+3. Go to the package folder and run `pip`
    ```
    cd preSNpy
    pip install .
