@@ -38,7 +38,7 @@ class PhysArray(ndarray):
 		return obj
 
 	@createAxes
-	def plot1D(self, ax, *args, **kwargs):
+	def plot(self, ax, *args, **kwargs):
 		'''
 			Plot 1D data.
 
