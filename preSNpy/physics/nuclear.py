@@ -27,24 +27,29 @@ class Nuclear:
 			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
 
 		elif type == 'kepler':
-			X = np.genfromtxt(filename, skip_header=2, unpack=True, \
-				usecols=(14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33))
-			header = np.genfromtxt(filename, skip_header=1, max_rows=1, \
-				unpack=True, dtype='str')[-X.shape[0]:]
-			
-			for (i,x) in enumerate(X):
-				name = header[i].lower()
-				if name == 'neutrons':
+			data = filename
+			header = list(data.keys())
+			if 'neutrons' in header:
+				neutron_index = header.index('neutrons')
+			elif 'nt1':
+				neutron_index = header.index('nt1')
+
+			for key in header[neutron_index:]:
+				if key == 'neutrons' or 'nt1':
 					name = 'n'
-				elif name == "'Fe":
+				elif key == "'Fe'":
 					name = 'x56'
-				setattr(self, name, PhysArray(x, unit='1', grid=self.grid))
+				else:
+					name = key
+				setattr(self, name, PhysArray(data[key].astype(float).fillna(0.0).values[:],
+                                  unit='1', grid=self.grid))
 
-			ye = np.genfromtxt(filename, skip_header=2, usecols=(11,), unpack=True)
-			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid))
+			setattr(self, 'ye', PhysArray(data['cell y_e'].astype(float).fillna(0.0).values[:],
+                                 unit='1', grid=self.grid))
 
-			Abar = np.genfromtxt(filename, skip_header=2, usecols=(10,), unpack=True)
-			setattr(self, 'abar', PhysArray(Abar, unit='1', grid=self.grid))
+			setattr(self, 'abar', PhysArray(data['cell a_bar'].astype(float).fillna(0.0).values[:],
+                                   unit='1', grid=self.grid))
+			X = self.ye
 			
 		self.parent.nuc = X.shape[0] + 1
 
