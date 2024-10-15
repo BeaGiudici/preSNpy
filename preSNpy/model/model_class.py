@@ -9,6 +9,7 @@ class Model:
 		self.grid = grid.GridList()
 		self.nx = None
 		self.nuc = None
+		self.radius = None
 		self.mass = None
 		self.hydro = hydro.Hydro(self, self.grid)
 		self.nuclear = nuclear.Nuclear(self, self.grid)
@@ -99,6 +100,7 @@ class Postbounce1D(Model):
 
 		self.grid.append(grid.Grid('radius', radius, unit='cm'))
 		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
+		self.radius = radius
 		self.mass = mass
 
 		# Initialize HYDRO quantities
@@ -134,6 +136,7 @@ class PreSN1D(Model):
 
 		self.grid.append(grid.Grid('radius', radius, unit='cm'))
 		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
+		self.radius = radius
 		self.mass = mass
 		self.nx = len(mass)
 
