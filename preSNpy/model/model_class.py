@@ -166,7 +166,7 @@ class PreSN1D(Model):
      	'''
 		def find_header_names(line):
 			## Find the column names
-			names = re.split(r'\s{2,}', file_lines[line_index-1])
+			names = re.split(r'\s{2,}', line)
 			names = [n.replace('#', '').strip().casefold() for n in names]
 			names = list(filter(None, names))
 			return names
