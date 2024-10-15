@@ -37,8 +37,12 @@ class Hydro:
                                       unit='k_B', grid=self.grid))
 			setattr(self, 'velocity', PhysArray(data['cell outer velocity'].astype(float).fillna(0.0).values[:],
                                        unit='cm/s', grid=self.grid))
-			setattr(self, 'energy', PhysArray(data['cell specific energy'].astype(float).fillna(0.0).values[:],
+			if 'cell specific energy' in data.keys():
+				setattr(self, 'energy', PhysArray(data['cell specific energy'].astype(float).fillna(0.0).values[:],
                                      unit='erg/g', grid=self.grid))
+			elif 'cell spec. int. energy' in data.keys():
+				setattr(self, 'energy', PhysArray(data['cell spec. int. energy'].astype(float).fillna(0.0).values[:],
+																		 unit='erg/g', grid=self.grid))
 			setattr(self, 'omega', PhysArray(data['cell angular velocity'].astype(float).fillna(0.0).values[:],
                                     unit='rad/s', grid=self.grid))
 		elif type == 'mesa':
@@ -53,7 +57,8 @@ class Hydro:
                                       unit='k_B', grid=self.grid))
 			setattr(self, 'velocity', PhysArray(data['velocity'].values[:],
                                        unit='cm/s', grid=self.grid))
-			setattr(self, 'energy', PhysArray(data['energy'].values[:],
+			if 'energy' in data.keys():
+				setattr(self, 'energy', PhysArray(data['energy'].values[:],
                                      unit='erg/g', grid=self.grid))
 			setattr(self, 'omega', PhysArray(data['omega'].values[:],
                                     unit='rad/s', grid=self.grid))
