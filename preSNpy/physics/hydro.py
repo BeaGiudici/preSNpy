@@ -26,19 +26,37 @@ class Hydro:
 			setattr(self, 'energy', PhysArray(data[5], unit='erg/g', grid=self.grid))
 		
 		elif type == 'kepler':
-			data = np.genfromtxt(filename, skip_header=2, usecols=(3,4,5,6,7,8,9), \
-												unpack=True)
-			setattr(self, 'density', PhysArray(data[1], unit='g/cm^3', \
-																			grid=self.grid))
-			setattr(self, 'pressure', PhysArray(data[3], unit='erg/cm^3', \
-																			 grid=self.grid))
-			setattr(self, 'temperature', PhysArray(data[2], unit='K',\
-														grid=self.grid))
-			setattr(self, 'entropy', PhysArray(data[5], unit='k_B', grid=self.grid))
-			setattr(self, 'velocity', PhysArray(data[0], unit='cm/s', \
-																			 grid=self.grid))
-			setattr(self, 'energy', PhysArray(data[4], unit='erg/g', grid=self.grid))
-			setattr(self, 'omega', PhysArray(data[6], unit='rad/s', grid=self.grid))
+			data = filename
+			setattr(self, 'density', PhysArray(data['cell density'].astype(float).fillna(0.0).values[:],
+                                      unit='g/cm^3', grid=self.grid))
+			setattr(self, 'pressure', PhysArray(data['cell pressure'].astype(float).fillna(0.0).values[:],
+                                       unit='erg/cm^3', grid=self.grid))
+			setattr(self, 'temperature', PhysArray(data['cell temperature'].astype(float).fillna(0.0).values[:],
+                                          unit='K', grid=self.grid))
+			setattr(self, 'entropy', PhysArray(data['cell specific entropy'].astype(float).fillna(0.0).values[:],
+                                      unit='k_B', grid=self.grid))
+			setattr(self, 'velocity', PhysArray(data['cell outer velocity'].astype(float).fillna(0.0).values[:],
+                                       unit='cm/s', grid=self.grid))
+			setattr(self, 'energy', PhysArray(data['cell specific energy'].astype(float).fillna(0.0).values[:],
+                                     unit='erg/g', grid=self.grid))
+			setattr(self, 'omega', PhysArray(data['cell angular velocity'].astype(float).fillna(0.0).values[:],
+                                    unit='rad/s', grid=self.grid))
+		elif type == 'mesa':
+			data = filename
+			setattr(self, 'density', PhysArray(10 ** data['logRho'].values[:],
+                                      unit='g/cm^3', grid=self.grid))
+			setattr(self, 'pressure', PhysArray(10 ** data['logP'].values[:],
+                                       unit='erg/cm^3', grid=self.grid))
+			setattr(self, 'temperature', PhysArray(10 ** data['logT'].astype(float).fillna(0.0).values[:],
+                                          unit='K', grid=self.grid))
+			setattr(self, 'entropy', PhysArray(data['entropy'].values[:],
+                                      unit='k_B', grid=self.grid))
+			setattr(self, 'velocity', PhysArray(data['velocity'].values[:],
+                                       unit='cm/s', grid=self.grid))
+			setattr(self, 'energy', PhysArray(data['energy'].values[:],
+                                     unit='erg/g', grid=self.grid))
+			setattr(self, 'omega', PhysArray(data['omega'].values[:],
+                                    unit='rad/s', grid=self.grid))
 
 
 	def rhor3(self):

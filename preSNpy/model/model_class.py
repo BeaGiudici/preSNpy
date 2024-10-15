@@ -1,5 +1,6 @@
 from preSNpy.model import *
-
+import pandas as pd
+import re
 class Model:
 	def __init__(self):
 		self.filename = None
@@ -118,9 +119,18 @@ class PreSN1D(Model):
 		self.ndim = 1
 		self.source = source
 
-		mass, radius = np.genfromtxt(filename, skip_header=2, usecols=(1,2), \
-															 unpack=True)
-		mass /= (1.989e33)
+		if source == 'kepler':
+			data = self.__read_kepler_file()
+			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
+			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
+			mass /= (1.989e33)
+		elif source == 'mesa':
+			data = self.__read_mesa_file()
+			mass = data['mass'].values[:]
+			radius = 10 ** data['logR'].values[:]
+		else:
+			raise ValueError('Source not recognized')
+
 		self.grid.append(grid.Grid('radius', radius, unit='cm'))
 		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
 		self.mass = mass
@@ -128,11 +138,86 @@ class PreSN1D(Model):
 
 		# Initialize HYDRO quantities
 		self.hydro.updateGrid(self.grid)
-		self.hydro.fillHydro(self.filename, source)
+		self.hydro.fillHydro(data, source)
 
 		# Initialize NUCLEAR quantities
 		self.nuclear.updateGrid(self.grid)
-		self.nuclear.fillNuclear(self.filename, source)
+		self.nuclear.fillNuclear(data, source)
+
+	def __read_kepler_file(self):
+		with open(self.filename, 'r') as f:
+			lines = f.readlines()
+			# Find the line where the data starts
+			line_index, column_names = self.__find_kepler_header_lines(lines)
+			# Find the line where the data ends
+			footer_index = self.__find_footer(lines)
+			# Read the data
+			data = pd.read_csv(self.filename, skiprows=line_index, delimiter='\s+', \
+							   skipfooter=footer_index, names=column_names)
+			data = data.replace('---', 0.0)
+		return data
+
+	def __find_kepler_header_lines(self, file_lines):
+		'''
+  		Find the index of the line where the data starts and the name of teh columns.
+    	return: int, number of lines to skip from the beginning of the file.
+				list, names of the columns.
+     	'''
+		def find_header_names(line):
+			## Find the column names
+			names = re.split(r'\s{2,}', file_lines[line_index-1])
+			names = [n.replace('#', '').strip().casefold() for n in names]
+			names = list(filter(None, names))
+			return names
+
+		for lindex in range(1,len(file_lines)):
+			try:
+				float(file_lines[lindex].split()[1])
+				line_index = lindex
+				break
+			except:
+				pass
+		
+		for lindex in reversed(range(0,line_index)):
+			column_names = find_header_names(file_lines[lindex])
+			if 'cell outer total mass' in column_names:
+				break
+
+		return line_index, column_names
+
+	def __read_mesa_file(self):
+		with open(self.filename, 'r') as f:
+			lines = f.readlines()
+			line_index = self.__find_MESA_header_lines(lines)
+			footer_index = self.__find_footer(lines)
+		data = pd.read_csv(self.filename, skiprows=line_index, delimiter='\s+',
+						   skipfooter=footer_index, header=0)
+		data = data.iloc[::-1].reset_index(drop=True)
+		return data
+	
+	def __find_MESA_header_lines(self, file_lines):
+		for lindex in range(1,len(file_lines)):
+			if 'logT' in file_lines[lindex]:
+				line_index = lindex
+				break
+		return line_index
+
+	def __find_footer(self, file_lines):
+		'''
+        Find the index of the line where the data ends.
+        return: int, number on lines to skip from the end of the file.
+        '''
+		findex = 0
+		lines = list(reversed(file_lines))
+		for lindex in range(len(lines)):
+			try:
+				float(lines[lindex].split()[0].replace(':',''))
+				findex = lindex
+				break
+			except:
+				continue
+		return findex
+
 
 if __name__ == '__main__':
 	p = Postbounce1D('HS13_1')
