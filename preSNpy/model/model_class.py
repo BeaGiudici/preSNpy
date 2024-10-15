@@ -156,6 +156,7 @@ class PreSN1D(Model):
 			data = pd.read_csv(self.filename, skiprows=line_index, delimiter='\s+', \
 							   skipfooter=footer_index, names=column_names)
 			data = data.replace('---', 0.0)
+			data = data.replace('-', 0.0)
 		return data
 
 	def __find_kepler_header_lines(self, file_lines):
