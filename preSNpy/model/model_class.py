@@ -1,5 +1,6 @@
 from preSNpy.model import *
 import pandas as pd
+pd.set_option("future.no_silent_downcasting", True)
 import re
 class Model:
 	def __init__(self):
