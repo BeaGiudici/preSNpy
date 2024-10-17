@@ -19,6 +19,7 @@ setup(
     install_requires = ['matplotlib',
                       'numpy',                     
                       'scipy',
+                      'pandas',  
                       'h5py',],
     python_requires = '>=3.6',
     classifiers = [
