@@ -80,5 +80,5 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the radius of the star (`self.starRadius`),
  - the zero-age main-sequence (ZAMS) mass (`self.ZAMS_mass`),
  - the compactness $\xi$ (`self.compactness`),
- - the mass coordinate where the s = 4 $k_B$ (M4, `self.M4`)
+ - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`)
  - the volume of the cells (`self.dV`)

@@ -68,7 +68,7 @@ class Model:
 		'''
 			Return the volume element dV = 4*pi*r^2*dr
 		'''
-		volume = 4*np.pi*self.x[1:]**2*np.diff(self.x)
+		volume = 4 * np.pi * (self.x[1:]**2) * np.diff(self.x)
 		v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
 		return np.append(v0, volume)
 	
