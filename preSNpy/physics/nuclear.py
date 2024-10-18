@@ -33,14 +33,16 @@ class Nuclear:
 				neutron_index = header.index('neutrons')
 			elif 'nt1':
 				neutron_index = header.index('nt1')
-
 			for key in header[neutron_index:]:
-				if key == 'neutrons' or 'nt1':
+				
+				if key in ['neutrons', 'nt1']:
 					name = 'n'
 				elif key == "'Fe'":
 					name = 'x56'
 				else:
 					name = key
+				print(PhysArray(data[key].astype(float).fillna(0.0).values[:],
+                                  unit='1', grid=self.grid))
 				setattr(self, name, PhysArray(data[key].astype(float).fillna(0.0).values[:],
                                   unit='1', grid=self.grid))
 

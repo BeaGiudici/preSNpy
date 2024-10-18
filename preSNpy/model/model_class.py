@@ -130,7 +130,7 @@ class PreSN1D(Model):
 		elif source == 'mesa':
 			data = self.__read_mesa_file()
 			mass = data['mass'].values[:]
-			radius = 10 ** data['logR'].values[:]
+			radius = 10 ** data['logR'].values[:] * 6.957e10
 		else:
 			raise ValueError('Source not recognized')
 
