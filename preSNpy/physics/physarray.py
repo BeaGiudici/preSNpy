@@ -56,9 +56,9 @@ class PhysArray(ndarray):
 		if self.ndim == 1:
 			x = self.grid.getAxis(axis)
 			y = self
-			line, = ax.plot(x, y, *args, **kwargs)
+			ax.plot(x, y, *args, **kwargs)
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
-			return line
+			return ax
 		else:
 			raise Exception('Data must be 1-dimensional')
