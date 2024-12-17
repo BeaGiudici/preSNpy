@@ -45,6 +45,12 @@ class Hydro:
 																		 unit='erg/g', grid=self.grid))
 			setattr(self, 'omega', PhysArray(data['cell angular velocity'].astype(float).fillna(0.0).values[:],
                                     unit='rad/s', grid=self.grid))
+			if 'b_r' in data.keys():
+				setattr(self, 'B_r', PhysArray(data['b_r'].astype(float).fillna(0.0).values[:],
+                                   unit='G', grid=self.grid))
+				setattr(self, 'B_phi', PhysArray(data['b_phi'].astype(float).fillna(0.0).values[:],
+                                   unit='G', grid=self.grid))
+
 		elif type == 'mesa':
 			data = filename
 			setattr(self, 'density', PhysArray(10 ** data['logRho'].values[:],
@@ -62,6 +68,11 @@ class Hydro:
                                      unit='erg/g', grid=self.grid))
 			setattr(self, 'omega', PhysArray(data['omega'].values[:],
                                     unit='rad/s', grid=self.grid))
+			if 'dynamo_log_B_r' in data.keys():
+				setattr(self, 'B_r', PhysArray(10 ** data['dynamo_log_B_r'].astype(float).fillna(-99).values[:],
+                                   unit='G', grid=self.grid))
+				setattr(self, 'B_phi', PhysArray(10 ** data['dynamo_log_B_phi'].astype(float).fillna(-99).values[:],
+                                   unit='G', grid=self.grid))
 
 
 	def rhor3(self):
