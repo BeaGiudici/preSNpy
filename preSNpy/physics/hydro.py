@@ -27,7 +27,6 @@ class Hydro:
 		
 		elif type == 'kepler':
 			data = filename
-			print(data.keys())
 			setattr(self, 'density', PhysArray(data['cell density'].astype(float).fillna(0.0).values[:],
                                       unit='g/cm^3', grid=self.grid))
 			setattr(self, 'pressure', PhysArray(data['cell pressure'].astype(float).fillna(0.0).values[:],
