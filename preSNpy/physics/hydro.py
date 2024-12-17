@@ -27,6 +27,7 @@ class Hydro:
 		
 		elif type == 'kepler':
 			data = filename
+			print(data.keys())
 			setattr(self, 'density', PhysArray(data['cell density'].astype(float).fillna(0.0).values[:],
                                       unit='g/cm^3', grid=self.grid))
 			setattr(self, 'pressure', PhysArray(data['cell pressure'].astype(float).fillna(0.0).values[:],
@@ -45,10 +46,10 @@ class Hydro:
 																		 unit='erg/g', grid=self.grid))
 			setattr(self, 'omega', PhysArray(data['cell angular velocity'].astype(float).fillna(0.0).values[:],
                                     unit='rad/s', grid=self.grid))
-			if 'B_r' in data.keys():
-				setattr(self, 'B_r', PhysArray(data['B_r'].astype(float).fillna(0.0).values[:],
+			if 'b_r' in data.keys():
+				setattr(self, 'B_r', PhysArray(data['b_r'].astype(float).fillna(0.0).values[:],
                                    unit='G', grid=self.grid))
-				setattr(self, 'B_phi', PhysArray(data['B_phi'].astype(float).fillna(0.0).values[:],
+				setattr(self, 'B_phi', PhysArray(data['b_phi'].astype(float).fillna(0.0).values[:],
                                    unit='G', grid=self.grid))
 
 		elif type == 'mesa':
