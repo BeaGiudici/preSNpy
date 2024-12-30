@@ -2,6 +2,7 @@ from preSNpy.model import *
 import pandas as pd
 pd.set_option("future.no_silent_downcasting", True)
 import re
+
 class Model:
 	def __init__(self):
 		self.filename = None
@@ -98,8 +99,8 @@ class Postbounce1D(Model):
 		radius, mass = np.genfromtxt(filename, skip_header=6, max_rows=self.nx, \
 															 usecols=(1,2), unpack=True)
 
-		self.grid.append(grid.Grid('radius', radius, unit='cm'))
-		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
+		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
+		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
 		self.x = radius
 		self.mass = mass
 
@@ -134,8 +135,8 @@ class PreSN1D(Model):
 		else:
 			raise ValueError('Source not recognized')
 
-		self.grid.append(grid.Grid('radius', radius, unit='cm'))
-		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
+		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
+		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
 		self.x = radius
 		self.mass = mass
 		self.nx = len(mass)

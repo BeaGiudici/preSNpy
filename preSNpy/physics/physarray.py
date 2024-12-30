@@ -1,4 +1,5 @@
 from numpy import ndarray, array
+from astropy.units import Unit
 from ..geometry.grid import Grid, GridList
 
 def createAxes(func):
@@ -32,7 +33,11 @@ class PhysArray(ndarray):
 			if isinstance(data, list):
 				data = array(data)
 			obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
-		setattr(obj, 'unit', unit)
+		# Set additional attributes
+		if unit is not None:
+				obj.unit = Unit(unit)  # Ensure the unit is compatible with astropy.units
+		else:
+				obj.unit = None
 		setattr(obj, 'grid', grid)
 
 		return obj
