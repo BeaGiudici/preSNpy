@@ -11,13 +11,14 @@ class Grid:
 		
 		self.name = name
 		self.axis = axis
+		self.unit = unit
 	'''
 	def fillGrid(self):
 		self.radius = self.parent.file['xzn'][:]
 		self.mass = self.parent.file['mass'][:]
 		self.bar_mass = self.parent.file['massb'][:]
 		self.grav_mass = self.parent.file['massg'][:]
-		if self.dim > 1:
+		if self.dim > 1:	
 			self.theta = self.parent.file['theta'][:]
 			if self.dim > 2:
 				self.phi = self.parent.file['phi'][:]	
