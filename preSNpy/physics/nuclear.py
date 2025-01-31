@@ -41,8 +41,6 @@ class Nuclear:
 					name = 'x56'
 				else:
 					name = key
-				print(PhysArray(data[key].astype(float).fillna(0.0).values[:],
-                                  unit='1', grid=self.grid))
 				setattr(self, name, PhysArray(data[key].astype(float).fillna(0.0).values[:],
                                   unit='1', grid=self.grid))
 
