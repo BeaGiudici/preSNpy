@@ -18,8 +18,16 @@ def createAxes(func):
 		return func(self, ax, *args, **kwargs)
 	return plotWithAx
 
+def _in_grid_units(ax, x, y):
+	'''
+		Check for conformability in units
+		As for now, it does not do anything, but it's gonna be useful once I
+		fully implement the units come dio comanda
+	'''
+	return x, y
+
 class PhysArray(ndarray):
-	def __new__ (self, data, unit=None, grid=None):
+	def __new__ (self, data, unit=None, grid=None, name=None, symbol=None):
 		'''
 			Parameters:
 			data (ndarray): The data to be stored.
@@ -34,6 +42,11 @@ class PhysArray(ndarray):
 			obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
 		setattr(obj, 'unit', unit)
 		setattr(obj, 'grid', grid)
+		setattr(obj, 'name', name)
+		if symbol == None:
+			setattr(obj, 'symbol', name)
+		else:
+			setattr(obj, 'symbol', symbol)
 
 		return obj
 
@@ -54,11 +67,12 @@ class PhysArray(ndarray):
 		axis = kwargs.pop('axis', 'radius')
 
 		if self.ndim == 1:
-			x = self.grid.getAxis(axis)
-			y = self
-			ax.plot(x, y, *args, **kwargs)
+			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
+			line, = ax.plot(x.copy(), y.copy(), *args, **kwargs)
+			ax.set_xlabel('%s [%s]' % (axis, x.unit))
+			ax.set_ylabel('%s [%s]' % (y.symbol, y.unit))
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
-			return ax
+			return line
 		else:
 			raise Exception('Data must be 1-dimensional')
