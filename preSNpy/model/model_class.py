@@ -126,11 +126,11 @@ class PreSN1D(Model):
 			data = self.__read_kepler_file()
 			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
 			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
-			mass /= (1.989e33)
+			mass /= gv.MSUN
 		elif source == 'mesa':
 			data = self.__read_mesa_file()
 			mass = data['mass'].values[:]
-			radius = 10 ** data['logR'].values[:] * 6.957e10
+			radius = (10 ** data['logR'].values[:]) * gv.RSUN
 		else:
 			raise ValueError('Source not recognized')
 
