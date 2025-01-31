@@ -2,7 +2,7 @@ from preSNpy.model import Postbounce1D
 import matplotlib.pyplot as plt
 import os
 import numpy as np
-from preSNpy.global_vars import PLOTSDIR, POSTDIR
+from folders import PLOTSDIR, POSTDIR
 
 plt.style.use('../default_style.mlpstyle')
 

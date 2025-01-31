@@ -1,10 +1,11 @@
+########################################################################
+#
+# Floders needed for the scripts. The user has to change them depending 
+# on the necessities.
+#
+########################################################################
+
 import os
-
-global MSUN
-MSUN = 1.988475e33 # in grams
-
-global RSUN
-RSUN = 6.955e10 # in cm
 
 global POSTDIR
 POSTDIR = os.path.join(os.path.expanduser('~'), 'PhD/postbounce_profies/')
