@@ -63,7 +63,7 @@ class Model:
 			if not s.isdigit() and \
 				(self.filename[i-1].isdigit() and self.filename[i+1].isdigit()):
 				mass += '.'
-		return float(mass)
+		return (mass * u.Msun).value
 	
 	def dV(self):
 		'''
