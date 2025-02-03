@@ -1,4 +1,4 @@
-from numpy import ndarray, array
+from preSNpy.physics import *
 from ..geometry.grid import Grid, GridList
 
 def createAxes(func):
@@ -26,7 +26,7 @@ def _in_grid_units(ax, x, y):
 	'''
 	return x, y
 
-class PhysArray(ndarray):
+class PhysArray(np.ndarray):
 	def __new__ (self, data, unit=None, grid=None, name=None, symbol=None):
 		'''
 			Parameters:
@@ -34,15 +34,22 @@ class PhysArray(ndarray):
 			unit (str): The unit of the data.
 			grid (Grid): The grid associated with the data.
 		'''
-		if isinstance(data, ndarray):
+		if isinstance(data, np.ndarray):
 			obj = data.view(PhysArray)
 		else:
 			if isinstance(data, list):
-				data = array(data)
-			obj = ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
-		setattr(obj, 'unit', unit)
+				data = np.array(data)
+			obj = np.ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
+
+		if unit is not None:
+			# Ensure the unit is compatible with astropy.units
+			setattr(obj, 'unit', u.Unit(unit))
+		else:
+			setattr(obj, 'unit', None)
+
 		setattr(obj, 'grid', grid)
 		setattr(obj, 'name', name)
+
 		if symbol == None:
 			setattr(obj, 'symbol', name)
 		else:

@@ -1,5 +1,4 @@
-import numpy as np
-from .physarray import PhysArray
+from preSNpy.physics import *
 
 class Nuclear:
 	def __init__(self, parent, grid):
@@ -21,10 +20,12 @@ class Nuclear:
 				name = header[i][2:].lower()
 				if name == 'p':
 					name = 'h1'
-				setattr(self, name, PhysArray(x, unit='1', grid=self.grid, name=name))
+				setattr(self, name, PhysArray(x, unit=u.dimensionless_unscaled, \
+								grid=self.grid, name=name))
 			ye = np.genfromtxt(filename, skip_header=6, max_rows=self.parent.nx, \
-											usecols=(8,), unpack=True)
-			setattr(self, 'ye', PhysArray(ye, unit='1', grid=self.grid, name='ye'))
+												 usecols=(8,), unpack=True)
+			setattr(self, 'ye', PhysArray(ye, unit=u.dimensionless_unscaled, \
+							grid=self.grid, name='ye'))
 
 		elif type == 'kepler':
 			data = filename
@@ -42,13 +43,15 @@ class Nuclear:
 				else:
 					name = key
 				setattr(self, name, PhysArray(data[key].astype(float).fillna(0.0).values[:],
-                                  unit='1', grid=self.grid, name=name))
+                unit=u.dimensionless_unscaled, grid=self.grid, name=name))
 
 			setattr(self, 'ye', PhysArray(data['cell y_e'].astype(float).fillna(0.0).values[:],
-                                 unit='1', grid=self.grid, name='ye', symbol=r'$Y_\mathrm{e}$'))
+              unit=u.dimensionless_unscaled, grid=self.grid, name='ye', \
+							symbol=r'$Y_\mathrm{e}$'))
 
 			setattr(self, 'abar', PhysArray(data['cell a_bar'].astype(float).fillna(0.0).values[:],
-                                   unit='1', grid=self.grid, name='abar', symbol=r'$\bar{A}$'))
+              unit=u.dimensionless_unscaled, grid=self.grid, name='abar', \
+							symbol=r'$\bar{A}$'))
 			X = self.ye
 		elif type == 'mesa':
 			data = filename
@@ -63,12 +66,14 @@ class Nuclear:
 				else:
 					name = key
 				setattr(self, name, PhysArray(data[key].values[:],
-                                  unit='1', grid=self.grid, name=name))
+                unit=u.dimensionless_unscaled, grid=self.grid, name=name))
 			setattr(self, 'ye', PhysArray(data['ye'].values[:],
-                                 unit='1', grid=self.grid, name='ye', symbol=r'$Y_\mathrm{e}$'))
+              unit=u.dimensionless_unscaled, grid=self.grid, name='ye', \
+							symbol=r'$Y_\mathrm{e}$'))
 
 			setattr(self, 'abar', PhysArray(data['abar'].values[:],
-                                   unit='1', grid=self.grid, name='abar', symbol=r'$\bar{A}$'))
+              unit=u.dimensionless_unscaled, grid=self.grid, name='abar', \
+							symbol=r'$\bar{A}$'))
 			X = self.ye
 			
 		self.parent.nuc = X.shape[0] + 1

@@ -62,7 +62,7 @@ class Model:
 			if not s.isdigit() and \
 				(self.filename[i-1].isdigit() and self.filename[i+1].isdigit()):
 				mass += '.'
-		return float(mass)
+		return (float(mass) * u.Msun)
 	
 	def dV(self):
 		'''
@@ -98,10 +98,10 @@ class Postbounce1D(Model):
 		radius, mass = np.genfromtxt(filename, skip_header=6, max_rows=self.nx, \
 															 usecols=(1,2), unpack=True)
 
-		self.grid.append(grid.Grid('radius', radius, unit='cm'))
-		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
-		self.x = radius
-		self.mass = mass
+		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
+		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
+		self.x = self.grid.getAxis('radius')
+		self.mass = self.grid.getAxis('mass')
 
 		# Initialize HYDRO quantities
 		self.hydro.updateGrid(self.grid)
@@ -134,10 +134,10 @@ class PreSN1D(Model):
 		else:
 			raise ValueError('Source not recognized')
 
-		self.grid.append(grid.Grid('radius', radius, unit='cm'))
-		self.grid.append(grid.Grid('mass', mass, unit='Msun'))
-		self.x = radius
-		self.mass = mass
+		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
+		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
+		self.x = self.grid.getAxis('radius')
+		self.mass = self.grid.getAxis('mass')
 		self.nx = len(mass)
 
 		# Initialize HYDRO quantities
