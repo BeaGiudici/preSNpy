@@ -47,6 +47,8 @@ class PhysArray(np.ndarray):
 		else:
 			setattr(obj, 'unit', None)
 
+		setattr(obj, 'value', data)
+
 		setattr(obj, 'grid', grid)
 		setattr(obj, 'name', name)
 
@@ -56,6 +58,75 @@ class PhysArray(np.ndarray):
 			setattr(obj, 'symbol', symbol)
 
 		return obj
+	
+	def to(self, unit):
+		'''
+			Return a new PhysArray with the converted unit
+		'''
+		if hasattr(self, 'unit'):
+			oldunit = self.unit
+
+		if oldunit != unit:
+			value = (self.value * oldunit).to_value(unit)
+			return PhysArray(value, unit=unit, grid=self.grid, symbol=self.symbol, \
+											 name=self.name)
+
+	
+	def __add__(self, other):
+		if hasattr(other, 'unit'):
+			try:
+				other = other.to(self.unit)
+				s = self.value + other.value
+				return PhysArray(s, unit=self.unit, grid=self.grid, \
+										 		 symbol=self.symbol, name=self.name)
+			except:
+				print('Illegal sum or difference of non-conformable units')
+	
+	def __sub__(self, other):
+		if hasattr(other, 'unit'):
+			try:
+				other = other.to(self.unit)
+				s = self.value - other.value
+				return PhysArray(s, unit=self.unit, grid=self.grid, \
+										 		 symbol=self.symbol, name=self.name)
+			except:
+				print('Illegal sum or difference of non-conformable units')
+			
+	def __mul__(self, other):
+		from numbers import Number
+		from numpy import number
+		from astropy.units import Unit, Quantity
+
+		if isinstance(other, Unit):
+			return Quantity(self.value, unit=other)
+		else:
+			r = self.value * other.value
+			res = PhysArray(r, grid=self.grid)
+
+			if isinstance(other, PhysArray):
+				res.unit = self.unit * other.unit
+				res.symbol = r'%s $\cdot$ %s' % (self.symbol, other.symbol)
+			elif isinstance(other, number) or isinstance(other, Number):
+				res.unit = self.unit
+				res.symbol = self.symbol
+			
+			return res
+	
+	def __div__(self, other):
+		from numbers import Number
+		from numpy import number
+
+		r = self.value / other.value
+		res = PhysArray(r, grid=self.grid)
+		
+		if isinstance(other, PhysArray):
+			res.unit = self.unit * (other.unit**(-1))
+			res.symbol = r'%s / %s' % (self.symbol, other.symbol)
+		elif isinstance(other, number) or isinstance(other, Number):
+			res.unit = self.unit
+			res.symbol = self.symbol
+		
+		return res
 
 	@createAxes
 	def plot(self, ax, *args, **kwargs):
