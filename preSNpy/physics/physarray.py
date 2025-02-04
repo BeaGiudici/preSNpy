@@ -98,42 +98,46 @@ class PhysArray(np.ndarray):
 		else:
 			raise Exception('Data must be 1-dimensional')
 
+	@createAxes
 	def plot2D(self, ax, *args, **kwargs):
 		'''
 			Plot 2D model (not useful for now)
 		'''
 		pass
 
+	@createAxes
 	def plotlogx(self, ax, *args, **kwargs):
 		'''
 			Plot with log scale only on x axis
 		'''
 		import matplotlib
-		line, = self.plot(ax, *args, draw=False, **kwargs)
+		line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
 		return line,
 
+	@createAxes
 	def plotlogy(self, ax, *args, **kwargs):
 		'''
 			Plot with log scale only on y axis
 		'''
 		import matplotlib
-		line, = self.plot(ax, *args, draw=False, **kwargs)
+		line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_yscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
 		return line,
 
+	@createAxes
 	def plotloglog(self, ax, *args, **kwargs):
 		'''
 			Plot with log scale on both axis
 		'''
 		import matplotlib
-		line, = self.plot(ax, *args, draw=False, **kwargs)
+		line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		ax.set_yscale("log")
