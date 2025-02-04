@@ -545,7 +545,23 @@ class PhysArray:
 					except:
 							return false
 					
-
+	def __getitem__(self, indices):
+		'''
+			Allow slicing/indexing, making PhysArray iterable
+		'''
+		from ..geometry.grid import GridList, Grid
+		newgrid = GridList()
+		for g in self.grid:
+			newgrid.append(Grid(g.name, g.axis.value[indices], unit=g.unit))
+		return PhysArray(self.value[indices], unit=self.unit, grid=newgrid, \
+									 name=self.name, symbol=self.symbol)
+	
+	def __setitem__(self, indices, new_value):
+		'''
+			Allow setting values
+		'''
+		self.value[indices] = new_value
+	
 	# Useful operations
 	def sin(self):
 		res = PhysArray(np.sin(self.value), unit=u.rad, grid=self.grid, \
