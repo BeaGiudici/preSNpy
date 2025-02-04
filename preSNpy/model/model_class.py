@@ -72,6 +72,41 @@ class Model:
 		v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
 		return np.append(v0, volume)
 	
+	def QHe(self):
+		'''
+			Compute the normalized integral of rhor3 on the He composition 
+			shell as defined in Giudici et al. 2024.
+		'''
+
+		rCOHe, mCOHe, idxCOHe = self.nuclear.shellInterface(['c12', 'o16'], 'he4')
+		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
+		rhor3 = self.hydro.rhor3().value
+		r = self.x.value
+		
+		curve_integral = np.trapz(rhor3[idxCOHe:idxHeH+1], \
+													 r[idxCOHe:idxHeH+1])
+		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
+
+		return float(curve_integral / rectangle)
+	
+	def QH(self, **kwargs):
+		'''
+			Compute the normalized integral of rhor3 on the H composition 
+			shell as defined in Giudici et al. 2024.
+		'''
+
+		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
+		rmax = kwargs.pop('rmax', 2.0 * rHeH)
+		idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
+		rhor3 = self.hydro.rhor3().value
+		r= self.x.value
+
+		curve_integral = np.trapz(rhor3[idxHeH:idx_max], \
+													 r[idxHeH:idx_max])
+		rectangle = (rmax - rHeH) * rhor3[idx_max]
+
+		return float(curve_integral / rectangle)
+	
 class Postbounce1D(Model):
 	def __init__(self, filename):
 		'''

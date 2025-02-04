@@ -26,38 +26,38 @@ def _in_grid_units(ax, x, y):
 	'''
 	return x, y
 
-class PhysArray(np.ndarray):
-	def __new__ (self, data, unit=None, grid=None, name=None, symbol=None):
+class PhysArray:
+	def __init__ (self, data, unit=None, grid=None, name=None, symbol=None):
 		'''
 			Parameters:
 			data (ndarray): The data to be stored.
 			unit (str): The unit of the data.
 			grid (Grid): The grid associated with the data.
 		'''
-		if isinstance(data, np.ndarray):
-			obj = data.view(PhysArray)
-		else:
-			if isinstance(data, list):
-				data = np.array(data)
-			obj = np.ndarray.__new__(self, data.shape, dtype=data.dtype, buffer=data)
 
 		if unit is not None:
 			# Ensure the unit is compatible with astropy.units
-			setattr(obj, 'unit', u.Unit(unit))
+			#setattr(obj, 'unit', u.Unit(unit))
+			self.unit = u.Unit(unit)
 		else:
-			setattr(obj, 'unit', None)
+			#setattr(obj, 'unit', None)
+			self.unit = None
 
-		setattr(obj, 'value', data)
+		#setattr(obj, 'value', data)
+		self.value = np.array(data)
+		self.ndim = len(data.shape)
 
-		setattr(obj, 'grid', grid)
-		setattr(obj, 'name', name)
+		#setattr(obj, 'grid', grid)
+		#setattr(obj, 'name', name)
+		self.grid = grid
+		self.name = name
 
 		if symbol == None:
-			setattr(obj, 'symbol', name)
+			#setattr(obj, 'symbol', name)
+			self.symbol = name
 		else:
-			setattr(obj, 'symbol', symbol)
-
-		return obj
+			#setattr(obj, 'symbol', symbol)
+			self.symbol = symbol
 	
 	def to(self, unit):
 		'''
@@ -67,9 +67,9 @@ class PhysArray(np.ndarray):
 			oldunit = self.unit
 
 		if oldunit != unit:
-			value = (self.value * oldunit).to_value(unit)
-			return PhysArray(value, unit=unit, grid=self.grid, symbol=self.symbol, \
-											 name=self.name)
+			self.value = (self.value * oldunit).to_value(unit)
+			
+		return self
 
 	@createAxes
 	def plot(self, ax, *args, **kwargs):
@@ -89,7 +89,7 @@ class PhysArray(np.ndarray):
 
 		if self.ndim == 1:
 			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
-			line, = ax.plot(x.copy(), y.copy(), *args, **kwargs)
+			line, = ax.plot(x.value, y.value, *args, **kwargs)
 			ax.set_xlabel(r'%s [$\mathrm{%s}$]' % (axis, x.unit))
 			ax.set_ylabel(r'%s [$\mathrm{%s}$]' % (y.symbol, y.unit))
 			if matplotlib.is_interactive() and draw:
@@ -146,11 +146,18 @@ class PhysArray(np.ndarray):
 		return line,
 
 	# Redefining operations
+	def __str__(self):
+		return f'{self.value} [{self.unit}]'
+	
+	def __repr__(self):
+		return f'{self.value} [{self.unit}]'
+		
 	def __add__(self, other):
 		'''
 			self + other
 		'''
-		if hasattr(other, 'unit'):
+
+		if isinstance(other, PhysArray):
 			try:
 				other = other.to(self.unit)
 				s = self.value + other.value
@@ -160,12 +167,37 @@ class PhysArray(np.ndarray):
 				print('Illegal sum of non-conformable units')
 		else:
 			raise ValueError('Sum only possible between PhysArray objects')
+		
+	def __radd__(self, other):
+		'''
+			* is commutative (other * self)
+		'''
+		from numbers import Number
+
+		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+			raise Exception('Not Implemented')
+		
+		return self.__add__(other)
+	
+	def __iadd__(self, other):
+		'''
+			self += other
+		'''
+		if isinstance(other, PhysArray):
+			if True:
+				other = other.to(self.unit)
+				self.value += other.value
+				return self
+			#except:
+		#		print('Illegal sum of non-conformable units')
+		else:
+			raise ValueError('Sum only possible between PhysArray objects')
 	
 	def __sub__(self, other):
 		'''
 			self - other
 		'''
-		if hasattr(other, 'unit'):
+		if isinstance(other, PhysArray):
 			try:
 				other = other.to(self.unit)
 				s = self.value - other.value
@@ -183,7 +215,7 @@ class PhysArray(np.ndarray):
 		from numbers import Number
 		from astropy.units import Unit, Quantity
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 
 		if isinstance(other, Unit):
@@ -214,7 +246,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		return self.__mul__(other)
@@ -226,7 +258,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, PhysArray):
@@ -255,7 +287,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, np.number) or isinstance(other, Number):
@@ -278,7 +310,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, PhysArray):
@@ -306,7 +338,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, np.number) or isinstance(other, Number):
@@ -329,7 +361,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, PhysArray):
@@ -357,7 +389,7 @@ class PhysArray(np.ndarray):
 		'''
 		from numbers import Number
 
-		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
 		
 		if isinstance(other, np.number) or isinstance(other, Number):
@@ -378,130 +410,142 @@ class PhysArray(np.ndarray):
 		'''
 			self ** other
 		'''
-		pass
+		from numbers import Number
 
+		if not isinstance(other, (np.ndarray, np.number, Number, list)):
+			raise Exception('Not Implemented')
+		
+		if np.isscalar(other):
+			res = PhysArray(self.value**other, grid=self.grid)
+			res.unit = self.unit**other
+			res.symbol = f'${self.symbol}^{other}$'
+
+		elif isinstance(other, np.ndarray) or isinstance(other, list):
+			if np.array(other).shape == self.value.shape:
+				res = PhysArray(self.value**other, grid=self.grid)
+				res.unit = self.unit**other
+			else:
+				raise ValueError('Array or list must be the same shape as self')
+			
+		return res
+
+	
 	def __eq__(x, y):
-		'''
-			x == y
-		'''
+		# x == y
 
-		false = PhysArray(False, unit=u.dimensionless_unscaled)
+		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
-				false.value = (x.value == y)
+				false = (x.value == y)
 				return false
 			else:
 				raise ValueError('Comparison must be between objects with the same shape, or scalar')
 		if np.isscalar(y):
-			false.value = (x.value == y)
+			false = (x.value == y)
 			return false
 		if isinstance(y, PhysArray):
 				if (x.unit != y.unit):
 					return false
 				else:
 					try:
-							false.value = (x.value == y.value)
+							false = (x.value == y.value)
 					except:
 							return false
 
 	def __ne__(x, y):
-		'''
-			x != y
-		'''
+		# x != y
+		
 		return ~ (x == y)
 
 	def __lt__(x, y):
-		'''
-			x < y
-		'''
-		false = PhysArray(False, unit=u.dimensionless_unscaled)
+		# x < y
+		
+		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
-				false.value = (x.value < y)
+				false = (x.value < y)
 				return false
 			else:
 				raise ValueError('Comparison must be between objects with the same shape, or scalar')
 		if np.isscalar(y):
-			false.value = (x.value < y)
+			false = (x.value < y)
 			return false
 		if isinstance(y, PhysArray):
 				if (x.unit != y.unit):
 					raise ValueError('Confront only conformable quantities!')
 				else:
 					try:
-							false.value = (x.value < y.value)
+							false = (x.value < y.value)
 					except:
 							return false
 
 	def __le__(x, y):
-		'''
-			x <= y
-		'''
-		false = PhysArray(False, unit=u.dimensionless_unscaled)
+		# x <= y
+		
+		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
-				false.value = (x.value <= y)
+				false = (x.value <= y)
 				return false
 			else:
 				raise ValueError('Comparison must be between objects with the same shape, or scalar')
 		if np.isscalar(y):
-			false.value = (x.value <= y)
+			false = (x.value <= y)
 			return false
 		if isinstance(y, PhysArray):
 				if (x.unit != y.unit):
 					raise ValueError('Confront only conformable quantities!')
 				else:
 					try:
-							false.value = (x.value <= y.value)
+							false = (x.value <= y.value)
 					except:
 							return false
 
 	def __gt__(x, y):
-		'''
-			x > y
-		'''
-		false = PhysArray(False, unit=u.dimensionless_unscaled)
+		# x > y
+
+		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
-				false.value = (x.value > y)
+				false = (x.value > y)
 				return false
 			else:
 				raise ValueError('Comparison must be between objects with the same shape, or scalar')
 		if np.isscalar(y):
-			false.value = (x.value > y)
+			false = (x.value > y)
 			return false
 		if isinstance(y, PhysArray):
 				if (x.unit != y.unit):
 					raise ValueError('Confront only conformable quantities!')
 				else:
 					try:
-							false.value = (x.value > y.value)
+							false = (x.value > y.value)
 					except:
 							return false
 
 	def __ge__(x, y):
-		'''
-			x >= y
-		'''
-		false = PhysArray(False, unit=u.dimensionless_unscaled)
+		#	x >= y
+		
+		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
-				false.value = (x.value >= y)
+				false = (x.value >= y)
 				return false
 			else:
 				raise ValueError('Comparison must be between objects with the same shape, or scalar')
 		if np.isscalar(y):
-			false.value = (x.value >= y)
+			false = (x.value >= y)
 			return false
 		if isinstance(y, PhysArray):
 				if (x.unit != y.unit):
 					raise ValueError('Confront only conformable quantities!')
 				else:
 					try:
-							false.value = (x.value >= y.value)
+							false = (x.value >= y.value)
 					except:
 							return false
-		
+					
+
 	# Useful operations
 	def sin(self):
 		res = PhysArray(np.sin(self.value), unit=u.rad, grid=self.grid, \
@@ -574,3 +618,7 @@ class PhysArray(np.ndarray):
 
 	def nanargmax(self):
 		return np.nanargmax(self.value)
+	
+	def diff(self, axis=0):
+		res = np.diff(self.value, axis=axis, prepend=0.0)
+		return PhysArray(res, unit=self.unit, grid=self.grid, name=f'd{self.name}')
