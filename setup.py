@@ -3,13 +3,13 @@ from setuptools import find_packages
 
 setup(
     name = 'preSNpy',
-    version = '1.0',    
+    version = '2.0',    
     description = 'A library to analyze pre-supernova models.',
     url = 'https://github.com/BeaGiudici/preSNpy',
     download_url = f'https://github.com/BeaGiudici/preSNpy',
     author = 'Beatrice Giudici',
     author_email = 'bea.giudici96@gmail.com',
-    license = 'GNU GENERAL PUBLIC LICENSE',
+    license = 'MIT LICENSE',
     packages = find_packages(),
     package_data = {
       'preSNpy.model' : ['preSNpy/model/*.py'],

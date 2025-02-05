@@ -105,3 +105,6 @@ will produced the same plot as before, but with the mass on the x-axis instead o
 There are also shortcut methods for the logarithmic scale. The methods `plotlogx()`, `plotlogy()`, and `plotloglog()` will create plot with a log-scale on x, y, or both axes, respectively.
 
 Once the planets are alligned, there will be a `plot2D()` method for 2D stellar models.
+
+## License
+This package is distributed under the MIT License, see [`LICENSE`](./LICENSE).
