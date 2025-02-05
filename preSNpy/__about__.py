@@ -1,0 +1,10 @@
+__title__ = 'preSNpy'
+__description__ = 'A library to analyze pre-supernova models'
+__version__ = '2.0.0'
+__author__ = 'Beatrice Giudici'
+__maintainer__ = 'Beatrice Giudici'
+__author_email__ = 'bea.giudici96@gmail.com'
+__license__ = 'MIT License'
+__copyright__ = "Copyright (c) 2025 Beatrice Giudici"
+__url__ = 'https://github.com/BeaGiudici/preSNpy'
+__credits__ = ['Beatrice Giudici', 'Marco Cusinato']
