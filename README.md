@@ -81,14 +81,14 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the radius of the star (`self.starRadius`),
  - the zero-age main-sequence (ZAMS) mass (`self.ZAMS_mass`),
  - the compactness $\xi$ (`self.compactness`),
- - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`),
+ - the mass coordinate where the s = 4 $k_B$ (M4, `self.M4`),
  - the volume of the cells (`self.dV`),
- - the normalized integrals of rhor3 in the He and H shells as Giudici et al. 20xx (`self.QHe` and `self.QH` respectively).
+ - the normalized integrals of the function $\rho r^3$ in the He and H shells as Giudici et al. 20xx (`self.QHe` and `self.QH` respectively).
 
 ### Data
 The data are divided in two main classes: 
  - `hydro`: it contains all the hydrodynamic quantities (and magnetic fields information, where present),
- - `nuclear`: it contains all the information about the mass fractions of the elements, as well as the electron fraction $Y_e$, and $\bar{A}$.
+ - `nuclear`: it contains all the information about the mass fractions of the elements, as well as the electron fraction $Y_e$, and the average atomic number $\bar{A}$.
 
 Their structure is the same, as every quantity is defined as a `PhysArray`, with given name, grid, unit, and possible symbol for plotting.
 
