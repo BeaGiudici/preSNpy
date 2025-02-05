@@ -80,8 +80,9 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the radius of the star (`self.starRadius`),
  - the zero-age main-sequence (ZAMS) mass (`self.ZAMS_mass`),
  - the compactness $\xi$ (`self.compactness`),
- - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`)
- - the volume of the cells (`self.dV`)
+ - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`),
+ - the volume of the cells (`self.dV`),
+ - the normalized integrals of rhor3 in the He and H shells as Giudici at al. 20xx (`self.QHe` and `self.QH` respectively).
 
 ### Data
 The data are divided in two main classes: 
@@ -100,7 +101,7 @@ will produce the profile of the density as function of radius. The parameter `ax
 ```
 m.hydro.density.plot(axis='mass')
 ```
-will produced the same plot as before, but with the mass on the x-axis instead of the radius. All the usual `matplotlib.pyplot` parameters can be passed to this method.
+will produce the same plot as before, but with the mass on the x-axis instead of the radius. All the usual `matplotlib.pyplot` parameters can be passed to this method.
 
 There are also shortcut methods for the logarithmic scale. The methods `plotlogx()`, `plotlogy()`, and `plotloglog()` will create plot with a log-scale on x, y, or both axes, respectively.
 

@@ -75,7 +75,7 @@ class Model:
 	def QHe(self):
 		'''
 			Compute the normalized integral of rhor3 on the He composition 
-			shell as defined in Giudici et al. 2024.
+			shell as defined in Giudici et al. 20xx.
 		'''
 
 		rCOHe, mCOHe, idxCOHe = self.nuclear.shellInterface(['c12', 'o16'], 'he4')
@@ -92,7 +92,7 @@ class Model:
 	def QH(self, **kwargs):
 		'''
 			Compute the normalized integral of rhor3 on the H composition 
-			shell as defined in Giudici et al. 2024.
+			shell as defined in Giudici et al. 20xx.
 		'''
 
 		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
