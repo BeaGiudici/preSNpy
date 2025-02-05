@@ -88,7 +88,7 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
 ### Data
 The data are divided in two main classes: 
  - `hydro`: it contains all the hydrodynamic quantities (and magnetic fields information, where present),
- - `nuclear`: it contains all the information about the mass fractions of the elements, as well as the electron fraction Y_e and A_bar.
+ - `nuclear`: it contains all the information about the mass fractions of the elements, as well as the electron fraction $Y_e$, and $\bar{A}$.
 
 Their structure is the same, as every quantity is defined as a `PhysArray`, with given name, grid, unit, and possible symbol for plotting.
 
