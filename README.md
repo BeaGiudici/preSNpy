@@ -83,7 +83,7 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the compactness $\xi$ (`self.compactness`),
  - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`),
  - the volume of the cells (`self.dV`),
- - the normalized integrals of rhor3 in the He and H shells as Giudici at al. 20xx (`self.QHe` and `self.QH` respectively).
+ - the normalized integrals of rhor3 in the He and H shells as Giudici et al. 20xx (`self.QHe` and `self.QH` respectively).
 
 ### Data
 The data are divided in two main classes: 
