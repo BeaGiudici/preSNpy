@@ -12,6 +12,7 @@ Besides, the package is based on the use of different `Python` libraries:
  - [matplotlib](https://matplotlib.org/)
  - [scipy](https://scipy.org/)
  - [pandas](https://pandas.pydata.org/)
+ - [astropy](https://www.astropy.org/)
 
 ## Installation
 `preSNpy` can be installed through `pip`. What follows is an easy step-by-step guide to the installation.
