@@ -1,3 +1,10 @@
+########################################################################
+#
+# Floders needed for the scripts. The user has to change them depending 
+# on the necessities.
+#
+########################################################################
+
 import os
 
 global POSTDIR

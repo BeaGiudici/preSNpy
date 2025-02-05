@@ -1,7 +1,7 @@
-# preSNpy v1.0
+# preSNpy v2.0.0
 `Python` package to play with pre-supernova progenitor stars.
 
-**Disclaimer.** This package has been build and mantained by a non-expert on stellar astrophysics. The main purpose of this package is to give a simple tool to extract useful information about the progenitor stars to people that are not familiar with stellar astrophysics.
+**Disclaimer.** This package has been build and mantained by non-experts on stellar astrophysics (a.k.a. supernovists). The main purpose of this package is to give a simple tool to extract useful information about the progenitor stars to people that are not familiar with stellar astrophysics.
 
 ## Requirements
 
@@ -12,6 +12,7 @@ Besides, the package is based on the use of different `Python` libraries:
  - [matplotlib](https://matplotlib.org/)
  - [scipy](https://scipy.org/)
  - [pandas](https://pandas.pydata.org/)
+ - [astropy](https://www.astropy.org/)
 
 ## Installation
 `preSNpy` can be installed through `pip`. What follows is an easy step-by-step guide to the installation.
@@ -80,5 +81,32 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the radius of the star (`self.starRadius`),
  - the zero-age main-sequence (ZAMS) mass (`self.ZAMS_mass`),
  - the compactness $\xi$ (`self.compactness`),
- - the mass coordinate where the s = 4 k$_B$ (M4, `self.M4`)
- - the volume of the cells (`self.dV`)
+ - the mass coordinate where the s = 4 $k_B$ (M4, `self.M4`),
+ - the volume of the cells (`self.dV`),
+ - the normalized integrals of the function $\rho r^3$ in the He and H shells as Giudici et al. 20xx (`self.QHe` and `self.QH` respectively).
+
+### Data
+The data are divided in two main classes: 
+ - `hydro`: it contains all the hydrodynamic quantities (and magnetic fields information, where present),
+ - `nuclear`: it contains all the information about the mass fractions of the elements, as well as the electron fraction $Y_e$, and the average atomic number $\bar{A}$.
+
+Their structure is the same, as every quantity is defined as a `PhysArray`, with given name, grid, unit, and possible symbol for plotting.
+
+### Plots
+Managing the plots is very simple. Every `PhysArray` has a method called `plot()` that produces the radial profile of the given quantity. For example, for `density`,
+```
+m = Postbounce1D(filename)
+m.hydro.density.plot()
+```
+will produce the profile of the density as function of radius. The parameter `axis` can be changed to have the chosen quantity as function of enclosed mass. Thus
+```
+m.hydro.density.plot(axis='mass')
+```
+will produce the same plot as before, but with the mass on the x-axis instead of the radius. All the usual `matplotlib.pyplot` parameters can be passed to this method.
+
+There are also shortcut methods for the logarithmic scale. The methods `plotlogx()`, `plotlogy()`, and `plotloglog()` will create plot with a log-scale on x, y, or both axes, respectively.
+
+Once the planets are alligned, there will be a `plot2D()` method for 2D stellar models.
+
+## License
+This package is distributed under the MIT License, see [`LICENSE`](./LICENSE).

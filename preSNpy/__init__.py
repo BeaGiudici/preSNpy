@@ -2,8 +2,8 @@ from . import model
 from . import geometry
 from . import physics
 
-from . import global_vars
+import os
 
-__version__ = '0.1.0'
-__author__ = 'Beatrice Giudici'
-__credits__ = 'Universitat de Valencia'
+from .__about__ import __version__, __description__, __title__, __author__, \
+                       __maintainer__, __author_email__, __license__, __url__, \
+                       __copyright__, __credits__

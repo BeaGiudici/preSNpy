@@ -63,7 +63,7 @@ class Model:
 			if not s.isdigit() and \
 				(self.filename[i-1].isdigit() and self.filename[i+1].isdigit()):
 				mass += '.'
-		return float(mass)
+		return (float(mass) * u.Msun)
 	
 	def dV(self):
 		'''
@@ -72,6 +72,41 @@ class Model:
 		volume = 4 * np.pi * (self.x[1:]**2) * np.diff(self.x)
 		v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
 		return np.append(v0, volume)
+	
+	def QHe(self):
+		'''
+			Compute the normalized integral of rhor3 on the He composition 
+			shell as defined in Giudici et al. 20xx.
+		'''
+
+		rCOHe, mCOHe, idxCOHe = self.nuclear.shellInterface(['c12', 'o16'], 'he4')
+		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
+		rhor3 = self.hydro.rhor3().value
+		r = self.x.value
+		
+		curve_integral = np.trapz(rhor3[idxCOHe:idxHeH+1], \
+													 r[idxCOHe:idxHeH+1])
+		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
+
+		return float(curve_integral / rectangle)
+	
+	def QH(self, **kwargs):
+		'''
+			Compute the normalized integral of rhor3 on the H composition 
+			shell as defined in Giudici et al. 20xx.
+		'''
+
+		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
+		rmax = kwargs.pop('rmax', 2.0 * rHeH)
+		idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
+		rhor3 = self.hydro.rhor3().value
+		r= self.x.value
+
+		curve_integral = np.trapz(rhor3[idxHeH:idx_max], \
+													 r[idxHeH:idx_max])
+		rectangle = (rmax - rHeH) * rhor3[idx_max]
+
+		return float(curve_integral / rectangle)
 	
 class Postbounce1D(Model):
 	def __init__(self, filename):
@@ -101,8 +136,8 @@ class Postbounce1D(Model):
 
 		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
 		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
-		self.x = radius
-		self.mass = mass
+		self.x = self.grid.getAxis('radius')
+		self.mass = self.grid.getAxis('mass')
 
 		# Initialize HYDRO quantities
 		self.hydro.updateGrid(self.grid)
@@ -127,18 +162,18 @@ class PreSN1D(Model):
 			data = self.__read_kepler_file()
 			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
 			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
-			mass /= (1.989e33)
+			mass /= gv.MSUN
 		elif source == 'mesa':
 			data = self.__read_mesa_file()
 			mass = data['mass'].values[:]
-			radius = 10 ** data['logR'].values[:] * 6.957e10
+			radius = (10 ** data['logR'].values[:]) * gv.RSUN
 		else:
 			raise ValueError('Source not recognized')
 
 		self.grid.append(grid.Grid('radius', radius, unit=u.cm))
 		self.grid.append(grid.Grid('mass', mass, unit=u.Msun))
-		self.x = radius
-		self.mass = mass
+		self.x = self.grid.getAxis('radius')
+		self.mass = self.grid.getAxis('mass')
 		self.nx = len(mass)
 
 		# Initialize HYDRO quantities
