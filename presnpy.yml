@@ -7,4 +7,5 @@ dependencies:
   - numpy
   - scipy
   - h5py
+  - astropy
 prefix: /home/beatrice/miniconda3/envs/presnpy
