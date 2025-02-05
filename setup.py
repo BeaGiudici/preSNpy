@@ -20,7 +20,8 @@ setup(
                       'numpy',                     
                       'scipy',
                       'pandas',  
-                      'h5py',],
+                      'h5py',
+                      'astropy',],
     python_requires = '>=3.6',
     classifiers = [
         'Development Status :: 1 - Planning',
