@@ -567,9 +567,13 @@ class PhysArray:
 			Allow slicing/indexing, making PhysArray iterable
 		'''
 		from ..geometry.grid import GridList, Grid
-		newgrid = GridList()
-		for g in self.grid:
-			newgrid.append(Grid(g.name, g.axis.value[indices], unit=g.unit))
+
+		if self.grid != None:
+			newgrid = GridList()
+			for g in self.grid:
+				newgrid.append(Grid(g.name, g.axis.value[indices], unit=g.unit))
+		else:
+			newgrid = None
 		return PhysArray(self.value[indices], unit=self.unit, grid=newgrid, \
 									 name=self.name, symbol=self.symbol)
 	
