@@ -21,9 +21,24 @@ def createAxes(func):
 def _in_grid_units(ax, x, y):
 	'''
 		Check for conformability in units
-		As for now, it does not do anything, but it's gonna be useful once I
-		fully implement the units come dio comanda
 	'''
+	import warnings
+
+	x_unit = ax.xaxis.get_units()
+	y_unit = ax.yaxis.get_units()
+
+	if x.unit != x_unit:
+		try:
+			x.to(x_unit)
+		except:
+			raise ValueError(f"Conformability error: x.unit = {x.unit}, expected {x_unit}") from None
+
+	if y.unit != y_unit:
+		try:
+			y.to(y_unit)
+		except Exception:
+			raise ValueError(f"Conformability error: y.unit = {y.unit}, expected {y_unit}") from None
+
 	return x, y
 
 class PhysArray:
@@ -92,6 +107,8 @@ class PhysArray:
 			line, = ax.plot(x.value, y.value, *args, **kwargs)
 			ax.set_xlabel(r'%s [$\mathrm{%s}$]' % (axis, x.unit))
 			ax.set_ylabel(r'%s [$\mathrm{%s}$]' % (y.symbol, y.unit))
+			ax.xaxis.set_units(x.unit)
+			ax.yaxis.set_units(y.unit)
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
 			return line
