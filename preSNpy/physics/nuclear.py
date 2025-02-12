@@ -9,6 +9,7 @@ class Nuclear:
 		self.grid = grid
 	
 	def fillNuclear(self, filename, type):
+		nuc = 0
 		if type == 'postbounce':
 			X = np.genfromtxt(filename, skip_header=12+self.parent.nx, \
 										 unpack=True)[1:]
@@ -22,10 +23,12 @@ class Nuclear:
 					name = 'h1'
 				setattr(self, name, PhysArray(x, unit=u.dimensionless_unscaled, \
 								grid=self.grid, name=name))
+				nuc += 1
 			ye = np.genfromtxt(filename, skip_header=6, max_rows=self.parent.nx, \
 												 usecols=(8,), unpack=True)
 			setattr(self, 'ye', PhysArray(ye, unit=u.dimensionless_unscaled, \
 							grid=self.grid, name='ye'))
+			nuc += 1
 
 		elif type == 'kepler':
 			data = filename
@@ -35,7 +38,7 @@ class Nuclear:
 			elif 'nt1':
 				neutron_index = header.index('nt1')
 			for key in header[neutron_index:]:
-				
+				nuc += 1
 				if key in ['neutrons', 'nt1']:
 					name = 'n'
 				elif key == "'Fe'":
@@ -48,11 +51,12 @@ class Nuclear:
 			setattr(self, 'ye', PhysArray(data['cell y_e'].astype(float).fillna(0.0).values[:],
               unit=u.dimensionless_unscaled, grid=self.grid, name='ye', \
 							symbol=r'$Y_\mathrm{e}$'))
+			nuc += 1
 
 			setattr(self, 'abar', PhysArray(data['cell a_bar'].astype(float).fillna(0.0).values[:],
               unit=u.dimensionless_unscaled, grid=self.grid, name='abar', \
 							symbol=r'$\bar{A}$'))
-			X = self.ye
+			#nuc += 1
 		elif type == 'mesa':
 			data = filename
 			header = list(data.keys())
@@ -67,16 +71,18 @@ class Nuclear:
 					name = key
 				setattr(self, name, PhysArray(data[key].values[:],
                 unit=u.dimensionless_unscaled, grid=self.grid, name=name))
+				nuc += 1
 			setattr(self, 'ye', PhysArray(data['ye'].values[:],
               unit=u.dimensionless_unscaled, grid=self.grid, name='ye', \
 							symbol=r'$Y_\mathrm{e}$'))
+			nuc += 1
 
 			setattr(self, 'abar', PhysArray(data['abar'].values[:],
               unit=u.dimensionless_unscaled, grid=self.grid, name='abar', \
 							symbol=r'$\bar{A}$'))
-			X = self.ye
+			#nuc += 1
 			
-		self.parent.nuc = X.shape[0] + 1
+		self.parent.nuc = nuc #X.value.shape[0] + 1
 
 	def shellInterface(self, elm1, elm2):
 		'''
