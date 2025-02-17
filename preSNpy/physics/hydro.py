@@ -1,4 +1,5 @@
 from preSNpy.physics import *
+from preSNpy.units import k_B
 
 class Hydro:
 	def __init__(self, parent, grid):
@@ -19,7 +20,7 @@ class Hydro:
 															name='pressure', grid=self.grid, symbol=r'$p$'))
 			setattr(self, 'temperature', PhysArray(data[2]*pc.MEVK, unit=u.K,\
 														grid=self.grid, symbol=r'$T$', name='temperature'))
-			setattr(self, 'entropy', PhysArray(data[3], unit=u.kB, grid=self.grid, \
+			setattr(self, 'entropy', PhysArray(data[3], unit=k_B, grid=self.grid, \
 																			symbol=r'$S$', name='entropy'))
 			setattr(self, 'velocity', PhysArray(data[0], unit=u.cm/u.s, \
 						name='radial velocity', grid=self.grid, symbol=r'$v_\mathrm{x}$'))
@@ -38,7 +39,7 @@ class Hydro:
                                           unit=u.K, grid=self.grid, \
 																					name='temeprature', symbol=r'$T$'))
 			setattr(self, 'entropy', PhysArray(data['cell specific entropy'].astype(float).fillna(0.0).values[:],
-                                      unit=u.kB, grid=self.grid, \
+                                      unit=k_B, grid=self.grid, \
 																			name='entropy', symbol=r'$S$'))
 			setattr(self, 'velocity', PhysArray(data['cell outer velocity'].astype(float).fillna(0.0).values[:],
                                        unit=u.cm/u.s, grid=self.grid, \
@@ -74,7 +75,7 @@ class Hydro:
                                           unit=u.K, grid=self.grid, \
 																						name='temperature', symbol=r'$T$'))
 			setattr(self, 'entropy', PhysArray(data['entropy'].values[:],
-                                      unit=u.kB, grid=self.grid, \
+                                      unit=k_B, grid=self.grid, \
 																				name='entropy', symbol=r'$S$'))
 			setattr(self, 'velocity', PhysArray(data['velocity'].values[:],
                                        unit=u.cm/u.s, grid=self.grid, \
