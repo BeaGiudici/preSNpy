@@ -22,11 +22,13 @@ ax[1].yaxis.set_label_position('right')
 
 models = {
     'model1' : {
+        'folder' : 'HS13_1',
         'im' : 0,
         'name' : 'SW13.1',
         'filename' : 'hs13.1_postbounce'
     },
     'model2' : {
+        'folder' : 'HS26_2',
         'im' : 1,
         'name' : 'SW26.2',
         'filename' : 'hs26.2_postbounce'
@@ -36,51 +38,52 @@ models = {
 files = [os.path.join(POSTDIR, 'hs13.1_postbounce')]
 
 for model in models.keys():
-    m = Postbounce1D(os.path.join(POSTDIR, model.filename))
+    m = Postbounce1D(os.path.join(POSTDIR, models[model]['filename']))
     rhor3 = m.hydro.rhor3()
 
     rCOHe, mCOHe, idxCOHe = m.nuclear.shellInterface(['c12','o16'], 'he4')
     rHeH = m.nuclear.shellInterface('he4', 'h1')[0]
-    idx2HeH = np.argmin(np.fabs(m.radius - 2.0*rHeH))
+    idx2HeH = (m.x - 2.0*rHeH).abs().argmin()
 
     # Plot rho r^3
-    rhor3.plot(ax[model.im], ls='-', color='black', zorder=2)
+    rhor3.plot(ax[models[model]['im']], ls='-', color='black', zorder=2)
 
     # Single figure
     fig_s, ax_s = plt.subplots()
     rhor3.plot(ax_s, ls='-', color='black', zorder=2)
     ax_s.set_yscale('log')
     ax_s.set_xscale('log')
-    ax_s.set_xlim(ax[model.im].get_xlim())
-    ax_s.set_ylim(ax[model.im].get_ylim())
+    ax_s.set_xlim(ax[models[model]['im']].get_xlim())
+    ax_s.set_ylim(ax[models[model]['im']].get_ylim())
     ax_s.set_ylabel(r'$\rho r^3$ [g]')
     ax_s.set_xlabel('Radius [cm]')
 
     # Plots shaded areas
-    ax[model.im].set_xlabel('Radius [cm]')
-    ax[model.im].set_ylabel(r'$\rho r^3$ [g]')
-    ax_s.axvline(rCOHe, ls='-.', color='red', zorder=3)
-    ax_s.axvline(rHeH, ls='--', color='red', zorder=3)
-    ax_s.text(0.82, 0.92, model.name, fontweight='bold', color='black', \
+    ax[models[model]['im']].set_xlabel('Radius [cm]')
+    ax[models[model]['im']].set_ylabel(r'$\rho r^3$ [g]')
+    ax_s.axvline(rCOHe.value, ls='-.', color='red', zorder=3)
+    ax_s.axvline(rHeH.value, ls='--', color='red', zorder=3)
+    ax_s.text(0.82, 0.92, models[model]['name'], fontweight='bold', color='black', \
                 transform=ax_s.transAxes, zorder=4)
     ax_s.set_xlabel('Radius [cm]')
     ax_s.set_ylabel(r'$\rho r^3$ [g]')
-    
-    xfill = np.linspace(rCOHe, rHeH, 10)
-    ax[model.im].fill_between(xfill, rhor3[idxCOHe], color='blue', alpha=0.5, zorder=1)
-    ax_s.fill_between(xfill, rhor3[idxCOHe], color='blue', alpha=0.5, zorder=1)
-    ax_s.axvline(rCOHe, ls='-.', color='red', zorder=3)
-    ax_s.axvline(rHeH, ls='--', color='red', zorder=3)
-    fig_s.savefig(os.path.join(PLOTSDIR, model, 'rhor3_shadeCOHe.pdf'), bbox_inches='tight')
-    xfill = np.linspace(rHeH, 2.0*rHeH, 10)
-    ax[model.im].fill_between(xfill, rhor3[idx2HeH], color='cyan', alpha=0.5, zorder=1)
-    ax_s.fill_between(xfill, rhor3[idx2HeH], color='cyan', alpha=0.5, zorder=1)
-    fig_s.savefig(os.path.join(PLOTSDIR, model, 'rhor3_shadeBoth.pdf'), bbox_inches='tight')
+    ax_s.axvline(rCOHe.value, ls=':', color='red', zorder=3)
+    ax_s.axvline(rHeH.value, ls='--', color='red', zorder=3)
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_empty.pdf'), bbox_inches='tight')
 
-    ax[model.im].axvline(rCOHe, ls='-.', color='red', zorder=3)
-    ax[model.im].axvline(rHeH, ls='--', color='red', zorder=3)
-    ax[model.im].text(0.72, 0.92, model.name, fontweight='bold', color='black', \
-                transform=ax[model.im].transAxes, zorder=4)
+    xfill = np.linspace(rCOHe.value, rHeH.value, 10)
+    ax[models[model]['im']].fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
+    ax_s.fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_shadeCOHe.pdf'), bbox_inches='tight')
+    xfill = np.linspace(rHeH.value, 2.0*rHeH.value, 10)
+    ax[models[model]['im']].fill_between(xfill, rhor3[idx2HeH].value, color='cyan', alpha=0.5, zorder=1)
+    ax_s.fill_between(xfill, rhor3[idx2HeH].value, color='cyan', alpha=0.5, zorder=1)
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_shadeBoth.pdf'), bbox_inches='tight')
+
+    ax[models[model]['im']].axvline(rCOHe.value, ls=':', color='red', zorder=3)
+    ax[models[model]['im']].axvline(rHeH.value, ls='--', color='red', zorder=3)
+    ax[models[model]['im']].text(0.72, 0.92, models[model]['name'], fontweight='bold', color='black', \
+                transform=ax[models[model]['im']].transAxes, zorder=4)
     
 
 plt.subplots_adjust(wspace=0.01, hspace=0.01)

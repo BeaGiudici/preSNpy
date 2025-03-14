@@ -90,9 +90,9 @@ class Nuclear:
 		between two layers.
 		'''
 		exclude = self.grid[1].excludeInterior(minlim=1.4)
-		mass = self.grid[1].axis.value[exclude]
-		radius = self.grid[0].axis.value[exclude]
-		N = len(mass)
+		mass = self.parent.mass[exclude]
+		radius = self.parent.x[exclude]
+		N = len(mass.value)
 
 		if isinstance(elm1, str):
 			element1 = getattr(self, elm1).value[exclude]
@@ -135,11 +135,11 @@ class Nuclear:
 		idx_in_shell_2 = shell2 & idx2
 
 		# mass coordinate of the interface
-		m_interface = float(np.nanmin(mass[idx_in_shell_2]))
+		m_interface = mass[idx_in_shell_2].nanmin()
 		# radius coordinate of the interface 
-		r_interface = float(np.nanmin(radius[idx_in_shell_2]))
+		r_interface = radius[idx_in_shell_2].nanmin()
 		# index of the interface
-		idx_interface = np.argmin(np.fabs(self.grid[0].axis.value - r_interface))
+		idx_interface = (self.grid[0].axis - r_interface).abs().argmin()
 		
 		return r_interface, m_interface, idx_interface
 	
