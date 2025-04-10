@@ -31,7 +31,8 @@ for model in gv.MODELS:
   m.hydro.density.plot(ax2, axis='mass', label=ps['label'], \
                         color=ps['color'], linestyle=ps['linestyle'])
 
-subax11 = ax1.inset_axes([0.03, 0.07, 0.42, 0.4], xlim=[9e7,5e9], ylim=[4e2, 4e7])
+subax11 = ax1.inset_axes([0.03, 0.07, 0.42, 0.4], xlim=[9e7,5e9], \
+                         ylim=[4e2, 4e7])
 ax1.indicate_inset_zoom(subax11, edgecolor='black', linewidth=2)
 subax11.set_xscale('log')
 subax11.set_yscale('log')

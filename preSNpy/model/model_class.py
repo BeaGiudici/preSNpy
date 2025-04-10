@@ -224,9 +224,11 @@ class PreSN1D(Model):
 
 	def __find_kepler_header_lines(self, file_lines):
 		'''
-  		Find the index of the line where the data starts and the name of teh columns.
-    	return: int, number of lines to skip from the beginning of the file.
-				list, names of the columns.
+  		Find the index of the line where the data starts and the name of 
+			the columns.
+    	file_lines: int, number of lines to skip from the beginning of the 
+							file.
+			return: list, names of the columns.
      	'''
 		def find_header_names(line):
 			## Find the column names
