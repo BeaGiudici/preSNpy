@@ -60,7 +60,7 @@ class PhysArray:
 
 		#setattr(obj, 'value', data)
 		self.value = np.array(data)
-		self.ndim = len(data.shape)
+		self.ndim = len(self.value.shape)
 
 		#setattr(obj, 'grid', grid)
 		#setattr(obj, 'name', name)
