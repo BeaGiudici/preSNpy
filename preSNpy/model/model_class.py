@@ -2,6 +2,8 @@ from preSNpy.model import *
 import pandas as pd
 pd.set_option("future.no_silent_downcasting", True)
 import re
+from astropy.constants import M_sun, R_sun
+
 
 class Model:
 	def __init__(self):
@@ -186,11 +188,11 @@ class PreSN1D(Model):
 			data = self.__read_kepler_file()
 			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
 			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
-			mass /= gv.MSUN
+			mass /= M_sun.to(u.g).value
 		elif source == 'mesa':
 			data = self.__read_mesa_file()
 			mass = data['mass'].values[:]
-			radius = (10 ** data['logR'].values[:]) * gv.RSUN
+			radius = (10 ** data['logR'].values[:]) * R_sun.to(u.cm).value
 		else:
 			raise ValueError('Source not recognized')
 
