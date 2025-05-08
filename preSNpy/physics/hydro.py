@@ -54,7 +54,7 @@ class Hydro:
 																		name='specific internal energy', symbol=r'$e_\mathrm{int}$'))
 			setattr(self, 'omega', PhysArray(data['cell angular velocity'].astype(float).fillna(0.0).values[:],
                                     unit=u.rad/u.s, grid=self.grid, \
-																		name='angular velocity', symbol=r'$\Omega'))
+																		name='angular velocity', symbol=r'$\Omega$'))
 			if 'b_r' in data.keys():
 				setattr(self, 'B_r', PhysArray(data['b_r'].astype(float).fillna(0.0).values[:],
                                    unit=u.gauss, grid=self.grid, \
