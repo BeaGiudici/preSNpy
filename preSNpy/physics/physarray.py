@@ -98,9 +98,10 @@ class PhysArray:
 		'''
 		import matplotlib
 
-		boundaries = kwargs.pop('boundaries', None)
 		draw = kwargs.pop('draw', True)
 		axis = kwargs.pop('axis', 'radius')
+		xlim = kwargs.pop('xlim', None)
+		ylim = kwargs.pop('ylim', None)
 
 		if self.ndim == 1:
 			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
@@ -109,9 +110,11 @@ class PhysArray:
 			ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
 			ax.xaxis.set_units(x.unit)
 			ax.yaxis.set_units(y.unit)
+			ax.set_xlim(xlim)
+			ax.set_xlim(ylim)
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
-			return line
+			return ax, line
 		else:
 			raise Exception('Data must be 1-dimensional')
 
@@ -128,12 +131,12 @@ class PhysArray:
 			Plot with log scale only on x axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	@createAxes
 	def plotlogy(self, ax, *args, **kwargs):
@@ -141,12 +144,12 @@ class PhysArray:
 			Plot with log scale only on y axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_yscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	@createAxes
 	def plotloglog(self, ax, *args, **kwargs):
@@ -154,13 +157,13 @@ class PhysArray:
 			Plot with log scale on both axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		ax.set_yscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	# Redefining operations
 	def __str__(self):
