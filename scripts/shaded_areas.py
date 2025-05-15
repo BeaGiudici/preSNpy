@@ -63,26 +63,34 @@ for model in models.keys():
     ax[models[model]['im']].set_ylabel(r'$\rho r^3$ [g]')
     ax_s.axvline(rCOHe.value, ls='-.', color='red', zorder=3)
     ax_s.axvline(rHeH.value, ls='--', color='red', zorder=3)
-    ax_s.text(0.82, 0.92, models[model]['name'], fontweight='bold', color='black', \
-                transform=ax_s.transAxes, zorder=4)
+    ax_s.text(0.82, 0.92, models[model]['name'], fontweight='bold', \
+              color='black', transform=ax_s.transAxes, zorder=4)
     ax_s.set_xlabel('Radius [cm]')
     ax_s.set_ylabel(r'$\rho r^3$ [g]')
     ax_s.axvline(rCOHe.value, ls=':', color='red', zorder=3)
     ax_s.axvline(rHeH.value, ls='--', color='red', zorder=3)
-    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_empty.pdf'), bbox_inches='tight')
-    '''
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], \
+                               'rhor3_empty.pdf'), bbox_inches='tight')
+
     xfill = np.linspace(rCOHe.value, rHeH.value, 10)
-    ax[models[model]['im']].fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
-    ax_s.fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
-    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_shadeCOHe.pdf'), bbox_inches='tight')
+    ax[models[model]['im']].fill_between(xfill, rhor3[idxCOHe].value, \
+                                         color='blue', alpha=0.5, zorder=1)
+    ax_s.fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, \
+                      zorder=1)
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], \
+                               'rhor3_shadeCOHe.pdf'), bbox_inches='tight')
     xfill = np.linspace(rHeH.value, 2.0*rHeH.value, 10)
-    ax[models[model]['im']].fill_between(xfill, rhor3[idx2HeH].value, color='cyan', alpha=0.5, zorder=1)
-    ax_s.fill_between(xfill, rhor3[idx2HeH].value, color='cyan', alpha=0.5, zorder=1)
-    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_shadeBoth.pdf'), bbox_inches='tight')
+    ax[models[model]['im']].fill_between(xfill, rhor3[idx2HeH].value, \
+                                         color='cyan', alpha=0.5, zorder=1)
+    ax_s.fill_between(xfill, rhor3[idx2HeH].value, color='cyan', alpha=0.5, \
+                      zorder=1)
+    fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], \
+                               'rhor3_shadeBoth.pdf'), bbox_inches='tight')
 
     ax[models[model]['im']].axvline(rCOHe.value, ls=':', color='red', zorder=3)
     ax[models[model]['im']].axvline(rHeH.value, ls='--', color='red', zorder=3)
-    ax[models[model]['im']].text(0.72, 0.92, models[model]['name'], fontweight='bold', color='black', \
+    ax[models[model]['im']].text(0.72, 0.92, models[model]['name'], \
+                                 fontweight='bold', color='black', \
                 transform=ax[models[model]['im']].transAxes, zorder=4)
     
     '''

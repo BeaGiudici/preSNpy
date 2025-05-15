@@ -60,7 +60,7 @@ class PhysArray:
 
 		#setattr(obj, 'value', data)
 		self.value = np.array(data)
-		self.ndim = len(data.shape)
+		self.ndim = len(self.value.shape)
 
 		#setattr(obj, 'grid', grid)
 		#setattr(obj, 'name', name)
@@ -98,20 +98,23 @@ class PhysArray:
 		'''
 		import matplotlib
 
-		boundaries = kwargs.pop('boundaries', None)
 		draw = kwargs.pop('draw', True)
 		axis = kwargs.pop('axis', 'radius')
+		xlim = kwargs.pop('xlim', None)
+		ylim = kwargs.pop('ylim', None)
 
 		if self.ndim == 1:
 			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
 			line, = ax.plot(x.value, y.value, *args, **kwargs)
-			ax.set_xlabel(r'%s [$\mathrm{%s}$]' % (axis, x.unit))
-			ax.set_ylabel(r'%s [$\mathrm{%s}$]' % (y.symbol, y.unit))
+			ax.set_xlabel(f'{axis} [{x.unit:latex}]')
+			ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
 			ax.xaxis.set_units(x.unit)
 			ax.yaxis.set_units(y.unit)
+			ax.set_xlim(xlim)
+			ax.set_xlim(ylim)
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
-			return line
+			return ax, line
 		else:
 			raise Exception('Data must be 1-dimensional')
 
@@ -128,12 +131,12 @@ class PhysArray:
 			Plot with log scale only on x axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	@createAxes
 	def plotlogy(self, ax, *args, **kwargs):
@@ -141,12 +144,12 @@ class PhysArray:
 			Plot with log scale only on y axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_yscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	@createAxes
 	def plotloglog(self, ax, *args, **kwargs):
@@ -154,13 +157,13 @@ class PhysArray:
 			Plot with log scale on both axis
 		'''
 		import matplotlib
-		line = self.plot(ax, *args, draw=False, **kwargs)
+		ax, line = self.plot(ax, *args, draw=False, **kwargs)
 
 		ax.set_xscale("log")
 		ax.set_yscale("log")
 		if matplotlib.is_interactive():
 			ax.get_figure().canvas.draw()
-		return line,
+		return ax, line
 
 	# Redefining operations
 	def __str__(self):

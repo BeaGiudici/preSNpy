@@ -15,9 +15,11 @@ if os.uname()[1] == 'dorothy':
   POSTDIR = os.path.join(os.path.expanduser('~'), 'PhD/postbounce_profiles/')
   PRESN_DIR = os.path.join(os.path.expanduser('~'), 'PhD/progenitor_models/')
   SNMODELS_DIR = os.path.join(os.path.expanduser('~'), '1Dsnmodels/')
-  PLOTSDIR = os.path.join(os.path.expanduser('~'), 'PhD', 'plots', 'stellarProgenitors')
+  PLOTSDIR = os.path.join(os.path.expanduser('~'), 'PhD', 'plots', \
+                          'stellarProgenitors')
 elif os.uname()[1] == 'superviz':
   SNMODELS_DIR = os.path.join(os.path.expanduser('~'), '1Dsnmodels')
-  PLOTSDIR = os.path.join(os.path.expanduser('~'), 'plots', 'stellarProgenitors')
+  PLOTSDIR = os.path.join(os.path.expanduser('~'), 'plots', \
+                          'stellarProgenitors')
   POSTDIR = os.path.join(os.path.expanduser('~'), 'postbounce_profiles')
   PRESN_DIR = os.path.join(os.path.expanduser('~'), 'progenitor_models')

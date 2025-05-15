@@ -66,7 +66,7 @@ This is able to handle models generated with the code KEPLER ([Weaver et al. 197
 ```
 m_kepler = PreSNpy.model.PreSN1D('path-to-kepler-file', source='kepler')
 ```
-- MESA
+- MESA:
 ```
 m_mesa = PreSNpy.model.PreSN1D('path-to-mesa-file', source='mesa')
 ```
@@ -81,7 +81,7 @@ Now, the technicalities. Both classes are children to the parent class `Model` (
  - the radius of the star (`self.starRadius`),
  - the zero-age main-sequence (ZAMS) mass (`self.ZAMS_mass`),
  - the compactness $\xi$ (`self.compactness`),
- - the mass coordinate where the s = 4 $k_B$ (M4, `self.M4`),
+ - the mass coordinate where the $s = 4$ $k_B$ (M4, `self.M4`),
  - the volume of the cells (`self.dV`),
  - the normalized integrals of the function $\rho r^3$ in the He and H shells as Giudici et al. 20xx (`self.QHe` and `self.QH` respectively).
 

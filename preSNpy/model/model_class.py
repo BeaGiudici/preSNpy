@@ -2,6 +2,8 @@ from preSNpy.model import *
 import pandas as pd
 pd.set_option("future.no_silent_downcasting", True)
 import re
+from astropy.constants import M_sun, R_sun
+
 
 class Model:
 	def __init__(self):
@@ -40,8 +42,11 @@ class Model:
 
 			Reference: O'Connor & Ott (2011)
 		'''
-		idx = np.argmin(np.fabs(self.grid.getAxis('mass') - masslim))
-		rlim = self.grid.getAxis('radius')[idx] / (1.e5) # in km
+		from ..physics.physarray import PhysArray
+		m0 = PhysArray(masslim, unit=self.mass.unit, grid=self.grid)
+		#idx = np.argmin(np.abs(self.mass - m0))
+		idx = (self.mass - m0).abs().argmin()
+		rlim = self.x[idx] / (1.e5) # in km
 		xi = masslim / (rlim/1000)
 		return xi
 	
@@ -49,13 +54,16 @@ class Model:
 		'''
 			Return the mass coordinate where the entropy per kb is 4.
 		'''
-		idx = np.argmin(np.fabs(self.hydro.entropy.value - 4))
+		from ..physics.physarray import PhysArray
+		sto4 = PhysArray(4.0, unit=self.hydro.entropy.unit, grid=self.grid)
+		idx = (self.hydro.entropy.value - sto4).abs().argmin()
 		return self.grid.getAxis('mass')[idx]
 
 	def ZAMS_mass(self):
 		'''
 			Return the zero-age main sequence mass of the star (in unit of Msun).
 		'''
+		from ..physics.physarray import PhysArray
 		mass = ''
 		for (i,s) in enumerate(self.filename):
 			if s.isdigit():
@@ -63,15 +71,19 @@ class Model:
 			if not s.isdigit() and \
 				(self.filename[i-1].isdigit() and self.filename[i+1].isdigit()):
 				mass += '.'
-		return (float(mass) * u.Msun)
+		return PhysArray(float(mass), unit=u.Msun, name='ZAMS mass', \
+									 symbol=r'$M_\mathrm{ZAMS}$')
 	
 	def dV(self):
 		'''
 			Return the volume element dV = 4*pi*r^2*dr
 		'''
-		volume = 4 * np.pi * (self.x[1:]**2) * np.diff(self.x)
-		v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
-		return np.append(v0, volume)
+		volume = 4 * np.pi * (self.x**2) * self.x.diff()
+		volume.grid = self.grid
+		volume.name = 'Volume'
+		volume.symbol = 'dV'
+		#v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
+		return volume #np.append(v0, volume)
 	
 	def QHe(self):
 		'''
@@ -87,18 +99,29 @@ class Model:
 		curve_integral = np.trapz(rhor3[idxCOHe:idxHeH+1], \
 													 r[idxCOHe:idxHeH+1])
 		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
-
-		return float(curve_integral / rectangle)
+		QHe = curve_integral / rectangle
+		QHe.name = 'QHe'
+		QHe.symbol = r'$\mathcal{Q}_\mathrm{He}$'
+		return QHe
 	
 	def QH(self, **kwargs):
 		'''
 			Compute the normalized integral of rhor3 on the H composition 
 			shell as defined in Giudici et al. 20xx.
 		'''
-
+		from ..physics.physarray import PhysArray
 		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
 		rmax = kwargs.pop('rmax', 2.0 * rHeH)
-		idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
+		if not isinstance(rmax, PhysArray):
+			if isinstance(rmax, float):
+				rmax = PhysArray(rmax, unit=rHeH.unit, grid=rHeH.grid)
+			elif isinstance(rmax, int):
+				rmax = PhysArray(float(rmax), unit=rHeH.unit, grid=rHeH.grid)
+			else:
+				raise ValueError('What kind of radius are you passing? >.>\n' \
+				'The only acceptable ones are PhysArray, float, or int')
+		#idx_max = np.argmin(np.fabs(self.grid[0].axis - rmax))
+		idx_max = (self.x - rmax).abs().argmin()
 		rhor3 = self.hydro.rhor3().value
 		r= self.x.value
 
@@ -106,7 +129,10 @@ class Model:
 													 r[idxHeH:idx_max])
 		rectangle = (rmax - rHeH) * rhor3[idx_max]
 
-		return float(curve_integral / rectangle)
+		QH = curve_integral / rectangle
+		QH.name = 'QH'
+		QH.symbol = r'$\mathcal{Q}_\mathrm{H}$'
+		return QH
 	
 class Postbounce1D(Model):
 	def __init__(self, filename):
@@ -162,11 +188,11 @@ class PreSN1D(Model):
 			data = self.__read_kepler_file()
 			mass = data['cell outer total mass'].astype(float).fillna(0.0).values[:]
 			radius = data['cell outer radius'].astype(float).fillna(0.0).values[:]
-			mass /= gv.MSUN
+			mass /= M_sun.to(u.g).value
 		elif source == 'mesa':
 			data = self.__read_mesa_file()
 			mass = data['mass'].values[:]
-			radius = (10 ** data['logR'].values[:]) * gv.RSUN
+			radius = (10 ** data['logR'].values[:]) * R_sun.to(u.cm).value
 		else:
 			raise ValueError('Source not recognized')
 
@@ -200,9 +226,11 @@ class PreSN1D(Model):
 
 	def __find_kepler_header_lines(self, file_lines):
 		'''
-  		Find the index of the line where the data starts and the name of teh columns.
-    	return: int, number of lines to skip from the beginning of the file.
-				list, names of the columns.
+  		Find the index of the line where the data starts and the name of 
+			the columns.
+    	file_lines: int, number of lines to skip from the beginning of the 
+							file.
+			return: list, names of the columns.
      	'''
 		def find_header_names(line):
 			## Find the column names
