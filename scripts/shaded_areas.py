@@ -70,7 +70,7 @@ for model in models.keys():
     ax_s.axvline(rCOHe.value, ls=':', color='red', zorder=3)
     ax_s.axvline(rHeH.value, ls='--', color='red', zorder=3)
     fig_s.savefig(os.path.join(PLOTSDIR, models[model]['folder'], 'rhor3_empty.pdf'), bbox_inches='tight')
-
+    '''
     xfill = np.linspace(rCOHe.value, rHeH.value, 10)
     ax[models[model]['im']].fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
     ax_s.fill_between(xfill, rhor3[idxCOHe].value, color='blue', alpha=0.5, zorder=1)
@@ -85,6 +85,6 @@ for model in models.keys():
     ax[models[model]['im']].text(0.72, 0.92, models[model]['name'], fontweight='bold', color='black', \
                 transform=ax[models[model]['im']].transAxes, zorder=4)
     
-
-plt.subplots_adjust(wspace=0.01, hspace=0.01)
-fig.savefig(os.path.join(PLOTSDIR, 'rhor3_shaded.pdf'), bbox_inches='tight')
+    '''
+#plt.subplots_adjust(wspace=0.01, hspace=0.01)
+#fig.savefig(os.path.join(PLOTSDIR, 'rhor3_shaded.pdf'), bbox_inches='tight')

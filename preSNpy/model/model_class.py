@@ -49,7 +49,7 @@ class Model:
 		'''
 			Return the mass coordinate where the entropy per kb is 4.
 		'''
-		idx = np.argmin(np.fabs(self.hydro.entropy - 4))
+		idx = np.argmin(np.fabs(self.hydro.entropy.value - 4))
 		return self.grid.getAxis('mass')[idx]
 
 	def ZAMS_mass(self):
