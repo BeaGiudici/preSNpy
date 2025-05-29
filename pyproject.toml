@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "preSNpy"
+version = "2.0.0"
+authors = [
+    {name = "Beatrice Giudici", email = "beatrice.giudici@uv.es"},
+    {name = "Marco Cusinato", email = "marco.cusinato@uv.es"},
+]
+description = "A library to analyze pre-supernova models"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 1 - Planning",
+    "Topic :: Scientific/Engineering :: Astrophysics",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+  "matplotlib",
+  "numpy",
+  "scipy",
+  "pandas",
+  "h5py",
+  "astropy",
+]
+
+[project.urls]
+Repository = "https://github.com/BeaGiudici/preSNpy"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["preSNpy*"]
+
+[tool.setuptools.package-data]
+"preSNpy.model" = ["*.py"]
+"preSNpy.geometry" = ["*.py"]
+"preSNpy.physics" = ["*.py"]

@@ -34,13 +34,7 @@ setup(
     classifiers = [
         'Development Status :: 1 - Planning',
         'Topic :: Scientific/Engineering :: Astrophysics',
-        'License :: OSI Approved :: GNU GENERAL PUBLIC LICENSE',  
         'Operating System :: POSIX :: Linux',
-        'Programming Language :: Python',        
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python',
     ],
 )
