@@ -25,13 +25,3 @@ def test_fail_open():
     PreSN1D('mah', source='kepler')
   with pytest.raises(FileNotFoundError):
     PreSN1D('eh', source='mesa')
-
-if __name__ == '__main__':
-  # Open postbounce file
-  test_open_postbounce()
-  # Open KEPLER files
-  test_open_kepler()
-  # Open MESA file
-  #test_open_mesa()
-  # Try to open non-existent files
-  test_fail_open()
