@@ -25,5 +25,5 @@ jobs:
         pip install pytest
 
     - name: Run tests
-      working-directory: ./preSNpy/tests
+      working-directory: ../tests
       run: pytest -v open_files.py
