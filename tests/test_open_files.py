@@ -8,16 +8,16 @@
 from preSNpy.model import Postbounce1D, PreSN1D
 import pytest
 
-def open_postbounce(filename):
+def test_open_postbounce(filename):
   Postbounce1D(filename)
 
-def open_kepler(filename):
+def test_open_kepler(filename):
   PreSN1D(filename, source='kepler')
 
-def open_mesa(filename):
+def test_open_mesa(filename):
   PreSN1D(filename, source='mesa')
 
-def fail_open():
+def test_fail_open():
   with pytest.raises(FileNotFoundError):
     Postbounce1D('boh')
   with pytest.raises(FileNotFoundError):
@@ -27,11 +27,11 @@ def fail_open():
 
 if __name__ == '__main__':
   # Open postbounce file
-  open_postbounce('models/postbounce')
+  test_open_postbounce('models/postbounce')
   # Open KEPLER files
-  open_kepler('models/kepler1')
-  open_kepler('models/kepler2')
+  test_open_kepler('models/kepler1')
+  test_open_kepler('models/kepler2')
   # Open MESA file
-  #open_mesa('models/mesa')
+  #test_open_mesa('models/mesa')
   # Try to open non-existent files
-  fail_open()
+  test_fail_open()
