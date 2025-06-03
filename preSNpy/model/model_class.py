@@ -96,7 +96,7 @@ class Model:
 		rhor3 = self.hydro.rhor3().value
 		r = self.x.value
 		
-		curve_integral = np.trapz(rhor3[idxCOHe:idxHeH+1], \
+		curve_integral = np.trapzezoid(rhor3[idxCOHe:idxHeH+1], \
 													 r[idxCOHe:idxHeH+1])
 		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
 		QHe = curve_integral / rectangle
