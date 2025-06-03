@@ -25,5 +25,4 @@ jobs:
         pip install pytest
 
     - name: Run tests
-      working-directory: ${{ github.workspace }}/tests
       run: pytest -v open_files.py
