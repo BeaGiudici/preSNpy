@@ -32,9 +32,9 @@ ref = {
 
 
 # Load the models
-pk1 = PreSN1D('models/kepler1')
-pk2 = PreSN1D('models/kepler2')
-post = Postbounce1D('models/postbounce')
+pk1 = PreSN1D('tests/models/kepler1')
+pk2 = PreSN1D('tests/models/kepler2')
+post = Postbounce1D('tests/models/postbounce')
 
 # SINGLE CHECK: Total mass
 for model in [pk1, pk2, post]:
