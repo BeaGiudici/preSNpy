@@ -25,4 +25,4 @@ jobs:
         pip install pytest
 
     - name: Run tests
-      run: pytest -v tests/open_files.py
+      run: pytest -v ./tests/open_files.py
