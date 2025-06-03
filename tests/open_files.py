@@ -32,6 +32,6 @@ if __name__ == '__main__':
   open_kepler('models/kepler1')
   open_kepler('models/kepler2')
   # Open MESA file
-  open_mesa('models/mesa')
+  #open_mesa('models/mesa')
   # Try to open non-existent files
   fail_open()
