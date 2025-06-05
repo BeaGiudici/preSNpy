@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+
+########################################################################
+#
+# Create density profile plots with shaded areas for QHe and QH 
+# computation (mainly for presentation purposes).
+#
+########################################################################
 from preSNpy.model import Postbounce1D
 import matplotlib.pyplot as plt
 import os
@@ -93,6 +101,5 @@ for model in models.keys():
                                  fontweight='bold', color='black', \
                 transform=ax[models[model]['im']].transAxes, zorder=4)
     
-    '''
 #plt.subplots_adjust(wspace=0.01, hspace=0.01)
 #fig.savefig(os.path.join(PLOTSDIR, 'rhor3_shaded.pdf'), bbox_inches='tight')
