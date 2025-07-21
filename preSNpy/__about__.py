@@ -1,6 +1,6 @@
 __title__ = 'preSNpy'
 __description__ = 'A library to analyze pre-supernova models'
-__version__ = '2.0.0'
+__version__ = '1.1.0'
 __author__ = 'Beatrice Giudici'
 __maintainer__ = 'Beatrice Giudici'
 __author_email__ = 'bea.giudici96@gmail.com'

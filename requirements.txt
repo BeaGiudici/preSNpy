@@ -1,0 +1,6 @@
+matplotlib
+numpy                  
+scipy
+pandas
+h5py
+astropy

@@ -83,6 +83,7 @@ class PhysArray:
 
 		if oldunit != unit:
 			self.value = (self.value * oldunit).to_value(unit)
+			self.unit = unit
 			
 		return self
 
