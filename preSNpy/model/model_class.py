@@ -24,7 +24,7 @@ class Model:
 		#volume = self.dV()
 		#density = self.hydro.density
 		#mass = np.sum(density * volume)
-		#return mass 
+		#return mass
 		return self.mass[-1]
 
 	def starRadius(self):
@@ -32,12 +32,12 @@ class Model:
 			Return the radius of the star.
 		'''
 		return self.grid[0].axis[-1]
-	
+
 	def compactness(self, masslim=2.5):
 		'''
 			Return the compactness of the star.
-			The compactness is defined as the ratio between the enclosed mass 
-			'masslim' (in unit of Msun) and the radius that encloses that mass 
+			The compactness is defined as the ratio between the enclosed mass
+			'masslim' (in unit of Msun) and the radius that encloses that mass
 			(in unit of 1000 km).
 
 			Reference: O'Connor & Ott (2011)
@@ -49,14 +49,14 @@ class Model:
 		rlim = self.x[idx] / (1.e5) # in km
 		xi = masslim / (rlim/1000)
 		return xi
-	
+
 	def M4(self):
 		'''
 			Return the mass coordinate where the entropy per kb is 4.
 		'''
 		from ..physics.physarray import PhysArray
 		sto4 = PhysArray(4.0, unit=self.hydro.entropy.unit, grid=self.grid)
-		idx = (self.hydro.entropy.value - sto4).abs().argmin()
+		idx = (self.hydro.entropy - sto4).abs().argmin()
 		return self.grid.getAxis('mass')[idx]
 
 	def ZAMS_mass(self):
@@ -73,7 +73,7 @@ class Model:
 				mass += '.'
 		return PhysArray(float(mass), unit=u.Msun, name='ZAMS mass', \
 									 symbol=r'$M_\mathrm{ZAMS}$')
-	
+
 	def dV(self):
 		'''
 			Return the volume element dV = 4*pi*r^2*dr
@@ -84,10 +84,10 @@ class Model:
 		volume.symbol = 'dV'
 		#v0 = 4.0 * np.pi * self.x[0]**3 / 3.0
 		return volume #np.append(v0, volume)
-	
+
 	def QHe(self):
 		'''
-			Compute the normalized integral of rhor3 on the He composition 
+			Compute the normalized integral of rhor3 on the He composition
 			shell as defined in Giudici et al. 20xx.
 		'''
 
@@ -95,18 +95,18 @@ class Model:
 		rHeH, mHeH, idxHeH = self.nuclear.shellInterface('he4', 'h1')
 		rhor3 = self.hydro.rhor3().value
 		r = self.x.value
-		
-		curve_integral = np.trapezoid(rhor3[idxCOHe:idxHeH+1], \
+
+		curve_integral = np.trapz(rhor3[idxCOHe:idxHeH+1], \
 													 r[idxCOHe:idxHeH+1])
 		rectangle = (rHeH - rCOHe) * rhor3[idxCOHe]
 		QHe = curve_integral / rectangle
 		QHe.name = 'QHe'
 		QHe.symbol = r'$\mathcal{Q}_\mathrm{He}$'
 		return QHe
-	
+
 	def QH(self, **kwargs):
 		'''
-			Compute the normalized integral of rhor3 on the H composition 
+			Compute the normalized integral of rhor3 on the H composition
 			shell as defined in Giudici et al. 20xx.
 		'''
 		from ..physics.physarray import PhysArray
@@ -133,7 +133,7 @@ class Model:
 		QH.name = 'QH'
 		QH.symbol = r'$\mathcal{Q}_\mathrm{H}$'
 		return QH
-	
+
 class Postbounce1D(Model):
 	def __init__(self, filename):
 		'''
@@ -151,7 +151,7 @@ class Postbounce1D(Model):
 			# Global data
 			header_global = f.readline().split()[1:]
 			data_global = f.readline().split()
-		
+
 		for (i, data) in enumerate(data_global):
 			setattr(self, header_global[i].lower(), float(data))
 
@@ -172,7 +172,7 @@ class Postbounce1D(Model):
 		# Initialize NUCLEAR quantities
 		self.nuclear.updateGrid(self.grid)
 		self.nuclear.fillNuclear(self.filename, 'postbounce')
-	
+
 class PreSN1D(Model):
 	def __init__(self, filename, source='kepler'):
 		'''
@@ -226,9 +226,9 @@ class PreSN1D(Model):
 
 	def __find_kepler_header_lines(self, file_lines):
 		'''
-  		Find the index of the line where the data starts and the name of 
+  		Find the index of the line where the data starts and the name of
 			the columns.
-    	file_lines: int, number of lines to skip from the beginning of the 
+    	file_lines: int, number of lines to skip from the beginning of the
 							file.
 			return: list, names of the columns.
      	'''
@@ -246,7 +246,7 @@ class PreSN1D(Model):
 				break
 			except:
 				pass
-		
+
 		for lindex in reversed(range(0,line_index)):
 			column_names = find_header_names(file_lines[lindex])
 			if 'cell outer total mass' in column_names:
@@ -263,7 +263,7 @@ class PreSN1D(Model):
 						   skipfooter=footer_index, header=0)
 		data = data.iloc[::-1].reset_index(drop=True)
 		return data
-	
+
 	def __find_MESA_header_lines(self, file_lines):
 		for lindex in range(1,len(file_lines)):
 			if 'logT' in file_lines[lindex]:

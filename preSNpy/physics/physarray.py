@@ -107,12 +107,12 @@ class PhysArray:
 		if self.ndim == 1:
 			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
 			line, = ax.plot(x.value, y.value, *args, **kwargs)
-			ax.set_xlabel(f'{axis} [{x.unit:latex}]')
-			ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
-			ax.xaxis.set_units(x.unit)
-			ax.yaxis.set_units(y.unit)
-			ax.set_xlim(xlim)
-			ax.set_xlim(ylim)
+			#ax.set_xlabel(f'{axis} [{x.unit:latex}]')
+			#ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
+			#ax.xaxis.set_units(x.unit)
+			#ax.yaxis.set_units(y.unit)
+			#ax.set_xlim(xlim)
+			#ax.set_xlim(ylim)
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
 			return ax, line
