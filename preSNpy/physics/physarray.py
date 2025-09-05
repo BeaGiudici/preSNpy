@@ -7,7 +7,6 @@ def createAxes(func):
 	@wraps(func)
 	def plotWithAx(self, *args, **kwargs):
 		import matplotlib.pyplot as plt
-		#plt.style.use('default_style.mlpstyle')
 		from matplotlib.axes import Axes
 		plt.ion()
 		if len(args) > 0 and isinstance(args[0], Axes):
@@ -27,13 +26,13 @@ def _in_grid_units(ax, x, y):
 	x_unit = ax.xaxis.get_units()
 	y_unit = ax.yaxis.get_units()
 
-	if x.unit != x_unit:
+	if x.unit != x_unit and x_unit is not None:
 		try:
 			x.to(x_unit)
 		except:
 			raise ValueError(f"Conformability error: x.unit = {x.unit}, expected {x_unit}") from None
 
-	if y.unit != y_unit:
+	if y.unit != y_unit and y_unit is not None:
 		try:
 			y.to(y_unit)
 		except Exception:
@@ -73,7 +72,7 @@ class PhysArray:
 		else:
 			#setattr(obj, 'symbol', symbol)
 			self.symbol = symbol
-	
+
 	def to(self, unit):
 		'''
 			Return a new PhysArray with the converted unit
@@ -84,7 +83,7 @@ class PhysArray:
 		if oldunit != unit:
 			self.value = (self.value * oldunit).to_value(unit)
 			self.unit = unit
-			
+
 		return self
 
 	@createAxes
@@ -94,7 +93,7 @@ class PhysArray:
 
 			Parameters:
 			ax (matplotlib.axes.Axes object): The axes to plot on.
-			*args, **kwargs: Arguments and keyword arguments passed to the 
+			*args, **kwargs: Arguments and keyword arguments passed to the
 												plot function.
 		'''
 		import matplotlib
@@ -107,12 +106,12 @@ class PhysArray:
 		if self.ndim == 1:
 			x, y = _in_grid_units(ax, self.grid.getAxis(axis), self)
 			line, = ax.plot(x.value, y.value, *args, **kwargs)
-			#ax.set_xlabel(f'{axis} [{x.unit:latex}]')
-			#ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
-			#ax.xaxis.set_units(x.unit)
-			#ax.yaxis.set_units(y.unit)
-			#ax.set_xlim(xlim)
-			#ax.set_xlim(ylim)
+			ax.xaxis.set_units(x.unit)
+			ax.yaxis.set_units(y.unit)
+			ax.set_xlim(xlim)
+			ax.set_xlim(ylim)
+			ax.set_xlabel(f'{axis} [{x.unit:latex}]')
+			ax.set_ylabel(f'{y.symbol} [{y.unit:latex}]')
 			if matplotlib.is_interactive() and draw:
 				ax.get_figure().canvas.draw()
 			return ax, line
@@ -169,10 +168,10 @@ class PhysArray:
 	# Redefining operations
 	def __str__(self):
 		return f'{self.value} [{self.unit}]'
-	
+
 	def __repr__(self):
 		return f'{self.value} [{self.unit}]'
-		
+
 	def __add__(self, other):
 		'''
 			self + other
@@ -188,7 +187,7 @@ class PhysArray:
 				print('Illegal sum of non-conformable units')
 		else:
 			raise ValueError('Sum only possible between PhysArray objects')
-		
+
 	def __radd__(self, other):
 		'''
 			* is commutative (other * self)
@@ -197,9 +196,9 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list)):
 			raise Exception('Not Implemented')
-		
+
 		return self.__add__(other)
-	
+
 	def __iadd__(self, other):
 		'''
 			self += other
@@ -213,7 +212,7 @@ class PhysArray:
 		#		print('Illegal sum of non-conformable units')
 		else:
 			raise ValueError('Sum only possible between PhysArray objects')
-	
+
 	def __sub__(self, other):
 		'''
 			self - other
@@ -228,7 +227,7 @@ class PhysArray:
 				print('Illegal difference of non-conformable units')
 		else:
 			raise ValueError('Difference only possible between PhysArray objects')
-			
+
 	def __mul__(self, other):
 		'''
 			self * other
@@ -258,9 +257,9 @@ class PhysArray:
 					res.symbol = self.symbol
 				else:
 					raise ValueError('Array or list must be the same shape as self')
-			
+
 			return res
-	
+
 	def __rmul__(self, other):
 		'''
 			* is commutative (other * self)
@@ -269,9 +268,9 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		return self.__mul__(other)
-	
+
 	def __div__(self, other):
 		'''
 			self / other
@@ -281,7 +280,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, PhysArray):
 			r = self.value / other.value
 			res = PhysArray(r, grid=self.grid)
@@ -298,9 +297,9 @@ class PhysArray:
 				res.symbol = self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-		
+
 		return res
-	
+
 	def __rdiv__(self, other):
 		'''
 			other / self
@@ -310,7 +309,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, np.number) or isinstance(other, Number):
 			res = PhysArray(other / self.value, grid=self.grid)
 			res.unit = (self.unit**(-1))
@@ -322,7 +321,7 @@ class PhysArray:
 				res.symbol = '1/%s' % self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-			
+
 		return res
 
 	def __truediv__(self, other):
@@ -333,7 +332,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, PhysArray):
 			r = self.value / other.value
 			res = PhysArray(r, grid=self.grid)
@@ -350,9 +349,9 @@ class PhysArray:
 				res.symbol = self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-		
+
 		return res
-	
+
 	def __rtruediv__(self, other):
 		'''
 			other / self
@@ -361,7 +360,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, np.number) or isinstance(other, Number):
 			res = PhysArray(other / self.value, grid=self.grid)
 			res.unit = (self.unit**(-1))
@@ -373,9 +372,9 @@ class PhysArray:
 				res.symbol = '1/%s' % self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-			
+
 		return res
-	
+
 	def __floordiv__(self, other):
 		'''
 			self // other
@@ -384,7 +383,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, PhysArray):
 			r = self.value // other.value
 			res = PhysArray(r, grid=self.grid)
@@ -401,9 +400,9 @@ class PhysArray:
 				res.symbol = self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-		
+
 		return res
-	
+
 	def __rfloordiv__(self, other):
 		'''
 			other // self
@@ -412,7 +411,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list, PhysArray)):
 			raise Exception('Not Implemented')
-		
+
 		if isinstance(other, np.number) or isinstance(other, Number):
 			res = PhysArray(other // self.value, grid=self.grid)
 			res.unit = (self.unit**(-1))
@@ -424,9 +423,9 @@ class PhysArray:
 				res.symbol = '1/%s' % self.symbol
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-			
+
 		return res
-	
+
 	def __pow__(self, other):
 		'''
 			self ** other
@@ -435,7 +434,7 @@ class PhysArray:
 
 		if not isinstance(other, (np.ndarray, np.number, Number, list)):
 			raise Exception('Not Implemented')
-		
+
 		if np.isscalar(other):
 			res = PhysArray(self.value**other, grid=self.grid)
 			res.unit = self.unit**other
@@ -447,10 +446,10 @@ class PhysArray:
 				res.unit = self.unit**other
 			else:
 				raise ValueError('Array or list must be the same shape as self')
-			
+
 		return res
 
-	
+
 	def __eq__(x, y):
 		# x == y
 
@@ -475,12 +474,12 @@ class PhysArray:
 
 	def __ne__(x, y):
 		# x != y
-		
+
 		return ~ (x == y)
 
 	def __lt__(x, y):
 		# x < y
-		
+
 		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
@@ -502,7 +501,7 @@ class PhysArray:
 
 	def __le__(x, y):
 		# x <= y
-		
+
 		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
@@ -546,7 +545,7 @@ class PhysArray:
 
 	def __ge__(x, y):
 		#	x >= y
-		
+
 		false = False #PhysArray(False, unit=u.dimensionless_unscaled)
 		if isinstance(y, np.ndarray):
 			if x.value.shape == y.shape:
@@ -565,7 +564,7 @@ class PhysArray:
 							false = (x.value >= y.value)
 					except:
 							return false
-					
+
 	def __getitem__(self, indices):
 		'''
 			Allow slicing/indexing, making PhysArray iterable
@@ -580,13 +579,13 @@ class PhysArray:
 			newgrid = None
 		return PhysArray(self.value[indices], unit=self.unit, grid=newgrid, \
 									 name=self.name, symbol=self.symbol)
-	
+
 	def __setitem__(self, indices, new_value):
 		'''
 			Allow setting values
 		'''
 		self.value[indices] = new_value
-	
+
 	# Useful operations
 	def sin(self):
 		res = PhysArray(np.sin(self.value), unit=u.rad, grid=self.grid, \
@@ -607,7 +606,7 @@ class PhysArray:
 		res = PhysArray(np.sqrt(self.value), unit=(self.unit)**(0.5), \
 									grid=self.grid, name='sqrt(%s)' % self.name)
 		return res
-	
+
 	def cbrt(self):
 		res = PhysArray(np.cbrt(self.value), unit=(self.unit)**(1./3.), \
 									grid=self.grid, name='cbrt(%s)' % self.name)
@@ -659,7 +658,7 @@ class PhysArray:
 
 	def nanargmax(self):
 		return np.nanargmax(self.value)
-	
+
 	def diff(self, axis=0):
 		res = np.diff(self.value, axis=axis, prepend=0.0)
 		return PhysArray(res, unit=self.unit, grid=self.grid, name=f'd{self.name}')
