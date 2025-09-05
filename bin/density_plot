@@ -11,8 +11,6 @@ from PromPy.utility.getinfo import getModelPlotSettings, getPostbounceFile
 from preSNpy.model import Postbounce1D
 import os
 
-plt.style.use('/home/beatrice/Codes/preSNpy/default_style.mlpstyle')
-
 fig = plt.figure(figsize=(20, 8), constrained_layout=True)
 gs = fig.add_gridspec(1, 2, width_ratios=[1, 1], wspace=0.01)
 

@@ -2,7 +2,7 @@
 
 ########################################################################
 #
-# Create density profile plots with shaded areas for QHe and QH 
+# Create density profile plots with shaded areas for QHe and QH
 # computation (mainly for presentation purposes).
 #
 ########################################################################
@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 from folders import PLOTSDIR, POSTDIR
-
-plt.style.use('../default_style.mlpstyle')
 
 fig, ax = plt.subplots(1, 2, figsize=[20,10], constrained_layout=True)
 
@@ -100,6 +98,6 @@ for model in models.keys():
     ax[models[model]['im']].text(0.72, 0.92, models[model]['name'], \
                                  fontweight='bold', color='black', \
                 transform=ax[models[model]['im']].transAxes, zorder=4)
-    
+
 #plt.subplots_adjust(wspace=0.01, hspace=0.01)
 #fig.savefig(os.path.join(PLOTSDIR, 'rhor3_shaded.pdf'), bbox_inches='tight')
